@@ -102,6 +102,8 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
     _exposedTopOverlap = 20.0;
     _exposedBottomOverlap = 20.0;
     _exposedBottomOverlapCount = 1;
+    
+    _layoutAnimationDuration = 0.5;
 }
 
 #pragma mark - View life cycle
@@ -147,7 +149,9 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
             exposedLayout.bottomOverlap = self.exposedBottomOverlap;
             exposedLayout.bottomOverlapCount = self.exposedBottomOverlapCount;
 
-            [self.collectionView setCollectionViewLayout:exposedLayout animated:YES];
+            [UIView animateWithDuration:self.layoutAnimationDuration delay:0 usingSpringWithDamping:1 initialSpringVelocity:0 options:0 animations:^{
+                [self.collectionView setCollectionViewLayout:exposedLayout animated:YES];
+            } completion:nil];
             
         } else {
             
@@ -168,8 +172,10 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
             //
             [self.collectionView performBatchUpdates:^ {
                 
-                [self.collectionView setContentOffset:self.stackedContentOffset animated:YES];
-                [self.collectionView setCollectionViewLayout:self.stackedLayout animated:YES];
+                [UIView animateWithDuration:self.layoutAnimationDuration delay:0 usingSpringWithDamping:1 initialSpringVelocity:0 options:0 animations:^{
+                    [self.collectionView setContentOffset:self.stackedContentOffset animated:YES];
+                    [self.collectionView setCollectionViewLayout:self.stackedLayout animated:YES];
+                } completion:nil];
             
             } completion:nil];
         }

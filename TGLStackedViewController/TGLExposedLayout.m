@@ -126,40 +126,19 @@
 
     NSMutableDictionary *layoutAttributes = [NSMutableDictionary dictionary];
     NSInteger itemCount = [self.collectionView numberOfItemsInSection:0];
+    
+    CGFloat const BottomY = CGRectGetHeight(self.collectionView.bounds) - self.layoutMargin.top - self.layoutMargin.bottom  - self.collectionView.contentInset.top;
 
     for (NSInteger item = 0; item < itemCount; item++) {
 
         NSIndexPath *indexPath = [NSIndexPath indexPathForItem:item inSection:0];
         UICollectionViewLayoutAttributes *attributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:indexPath];
 
-        if (item < self.exposedItemIndex) {
-            
-            // Items before exposed item
-            // are aligned above top with
-            // amount -topOverlap
-            //
-            attributes.frame = CGRectMake(self.layoutMargin.left, self.layoutMargin.top - self.topOverlap, itemSize.width, itemSize.height);
-
-            // Items below first unexposed
-            // are hidden to improve
-            // performance
-            //
-            if (item < self.exposedItemIndex - 1) attributes.hidden = YES;
-
-        } else if (item == self.exposedItemIndex) {
+        if (item == self.exposedItemIndex) {
             
             // Exposed item
             //
             attributes.frame = CGRectMake(self.layoutMargin.left, self.layoutMargin.top, itemSize.width, itemSize.height);
-
-        } else if (item > self.exposedItemIndex + self.bottomOverlapCount) {
-            
-            // Items following overlapping
-            // items at bottom are hidden
-            // to improve performance
-            //
-            attributes.frame = CGRectMake(self.layoutMargin.left, self.collectionViewContentSize.height, itemSize.width, itemSize.height);
-            attributes.hidden = YES;
 
         } else {
         
@@ -169,8 +148,9 @@
             // exposed item
             //
             NSInteger count = MIN(self.bottomOverlapCount + 1, itemCount - self.exposedItemIndex) - (item - self.exposedItemIndex);
+            
 
-            attributes.frame = CGRectMake(self.layoutMargin.left, self.layoutMargin.top + itemSize.height - count * self.bottomOverlap, itemSize.width, itemSize.height);
+            attributes.frame = CGRectMake(self.layoutMargin.left, BottomY - count * self.bottomOverlap, itemSize.width, itemSize.height);
         }
 
         attributes.zIndex = item;
