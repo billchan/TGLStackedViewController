@@ -148,7 +148,7 @@
             // exposed item
             //
             NSInteger count = MIN(self.bottomOverlapCount + 1, itemCount - self.exposedItemIndex) - (item - self.exposedItemIndex);
-            
+            if (item < self.exposedItemIndex) count--;
 
             attributes.frame = CGRectMake(self.layoutMargin.left, BottomY - count * self.bottomOverlap, itemSize.width, itemSize.height);
         }
