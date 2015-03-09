@@ -139,6 +139,7 @@
             // Exposed item
             //
             attributes.frame = CGRectMake(self.layoutMargin.left, self.layoutMargin.top, itemSize.width, itemSize.height);
+            attributes.zIndex = self.bottomOverlapCount + 1;
 
         } else {
         
@@ -150,10 +151,10 @@
             NSInteger count = MIN(self.bottomOverlapCount + 1, itemCount - self.exposedItemIndex) - (item - self.exposedItemIndex);
             if (item < self.exposedItemIndex) count--;
 
+            attributes.zIndex = count;
+            
             attributes.frame = CGRectMake(self.layoutMargin.left, BottomY - count * self.bottomOverlap, itemSize.width, itemSize.height);
         }
-
-        attributes.zIndex = item;
 
         layoutAttributes[indexPath] = attributes;
     }
