@@ -44,7 +44,6 @@
         self.layoutMargin = UIEdgeInsetsMake(40.0, 0.0, 0.0, 0.0);
         self.topOverlap = 20.0;
         self.bottomOverlap = 20.0;
-        self.bottomOverlapCount = 1;
 
         self.exposedItemIndex = exposedItemIndex;
     }
@@ -94,16 +93,6 @@
     }
 }
 
-- (void)setBottomOverlapCount:(NSUInteger)bottomOverlapCount {
-    
-    if (bottomOverlapCount != self.bottomOverlapCount) {
-        
-        _bottomOverlapCount = bottomOverlapCount;
-        
-        [self invalidateLayout];
-    }
-}
-
 #pragma mark - Layout computation
 
 - (CGSize)collectionViewContentSize {
@@ -128,18 +117,19 @@
     NSInteger itemCount = [self.collectionView numberOfItemsInSection:0];
     
     CGFloat const BottomY = CGRectGetHeight(self.collectionView.bounds) - self.layoutMargin.top - self.layoutMargin.bottom  - self.collectionView.contentInset.top;
+    NSInteger const CardsCount = [self.collectionView numberOfItemsInSection:0];
 
     for (NSInteger item = 0; item < itemCount; item++) {
 
         NSIndexPath *indexPath = [NSIndexPath indexPathForItem:item inSection:0];
         UICollectionViewLayoutAttributes *attributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:indexPath];
-
+        
         if (item == self.exposedItemIndex) {
             
             // Exposed item
             //
             attributes.frame = CGRectMake(self.layoutMargin.left, self.layoutMargin.top, itemSize.width, itemSize.height);
-            attributes.zIndex = self.bottomOverlapCount + 1;
+            attributes.zIndex = CardsCount;
 
         } else {
         
@@ -148,7 +138,7 @@
             // botton right below the
             // exposed item
             //
-            NSInteger count = MIN(self.bottomOverlapCount + 1, itemCount - self.exposedItemIndex) - (item - self.exposedItemIndex);
+            NSInteger count = MIN(CardsCount, itemCount - self.exposedItemIndex) - (item - self.exposedItemIndex);
             if (item < self.exposedItemIndex) count--;
 
             attributes.zIndex = count;

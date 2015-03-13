@@ -101,9 +101,19 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
     _exposedItemSize = CGSizeZero;
     _exposedTopOverlap = 20.0;
     _exposedBottomOverlap = 20.0;
-    _exposedBottomOverlapCount = 1;
     
     _layoutAnimationDuration = 0.5;
+}
+
+- (TGLExposedLayout *)exposedLayout:(NSIndexPath *)exposedItemIndexPath {
+    TGLExposedLayout *exposedLayout = [[TGLExposedLayout alloc] initWithExposedItemIndex:exposedItemIndexPath.item];
+    
+    exposedLayout.layoutMargin = self.exposedLayoutMargin;
+    exposedLayout.itemSize = self.exposedItemSize;
+    exposedLayout.topOverlap = self.exposedTopOverlap;
+    exposedLayout.bottomOverlap = self.exposedBottomOverlap;
+
+    return exposedLayout;
 }
 
 #pragma mark - View life cycle
@@ -141,13 +151,7 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
             
             self.stackedContentOffset = self.collectionView.contentOffset;
             
-            TGLExposedLayout *exposedLayout = [[TGLExposedLayout alloc] initWithExposedItemIndex:exposedItemIndexPath.item];
-            
-            exposedLayout.layoutMargin = self.exposedLayoutMargin;
-            exposedLayout.itemSize = self.exposedItemSize;
-            exposedLayout.topOverlap = self.exposedTopOverlap;
-            exposedLayout.bottomOverlap = self.exposedBottomOverlap;
-            exposedLayout.bottomOverlapCount = self.exposedBottomOverlapCount;
+            TGLExposedLayout *exposedLayout = [self exposedLayout:exposedItemIndexPath];
 
             [UIView animateWithDuration:self.layoutAnimationDuration delay:0 usingSpringWithDamping:1 initialSpringVelocity:0 options:0 animations:^{
                 [self.collectionView setCollectionViewLayout:exposedLayout animated:YES];
