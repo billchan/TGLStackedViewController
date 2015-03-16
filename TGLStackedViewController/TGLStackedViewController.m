@@ -138,11 +138,15 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
 #pragma mark - Accessors
 
 - (void)setExposedItemIndexPath:(NSIndexPath *)exposedItemIndexPath {
+    [self setExposedItemIndexPath:exposedItemIndexPath withVelocity:0];
+}
 
+- (void)setExposedItemIndexPath:(NSIndexPath *)exposedItemIndexPath withVelocity:(CGFloat)velocity {
+    [self willChangeValueForKey:@"exposedItemIndexPath"];
     if (![exposedItemIndexPath isEqual:_exposedItemIndexPath]) {
-
+        
         if (exposedItemIndexPath) {
-
+            
             // Select newly exposed item, possibly
             // deslecting the previous selection,
             // and animate to exposed layout
@@ -152,7 +156,7 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
             self.stackedContentOffset = self.collectionView.contentOffset;
             
             TGLExposedLayout *exposedLayout = [self exposedLayout:exposedItemIndexPath];
-
+            
             [UIView animateWithDuration:self.layoutAnimationDuration delay:0 usingSpringWithDamping:1 initialSpringVelocity:0 options:0 animations:^{
                 [self.collectionView setCollectionViewLayout:exposedLayout animated:YES];
             } completion:nil];
@@ -166,7 +170,7 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
             
             self.stackedLayout.overwriteContentOffset = YES;
             self.stackedLayout.contentOffset = self.stackedContentOffset;
-
+            
             // Issue #10: Collapsing on iOS 8
             //
             // NOTE: This solution produces a warning message
@@ -180,12 +184,13 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
                     [self.collectionView setContentOffset:self.stackedContentOffset animated:YES];
                     [self.collectionView setCollectionViewLayout:self.stackedLayout animated:YES];
                 } completion:nil];
-            
+                
             } completion:nil];
         }
         
         _exposedItemIndexPath = exposedItemIndexPath;
     }
+    [self didChangeValueForKey:@"exposedItemIndexPath"];
 }
 
 #pragma mark - CollectionViewDataSource protocol
