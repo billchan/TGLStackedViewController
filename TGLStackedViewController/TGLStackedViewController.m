@@ -138,10 +138,10 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
 #pragma mark - Accessors
 
 - (void)setExposedItemIndexPath:(NSIndexPath *)exposedItemIndexPath {
-    [self setExposedItemIndexPath:exposedItemIndexPath withVelocity:0];
+    [self setExposedItemIndexPath:exposedItemIndexPath withInitialVelocity:0];
 }
 
-- (void)setExposedItemIndexPath:(NSIndexPath *)exposedItemIndexPath withVelocity:(CGFloat)velocity {
+- (void)setExposedItemIndexPath:(NSIndexPath *)exposedItemIndexPath withInitialVelocity:(CGFloat)velocity {
     [self willChangeValueForKey:@"exposedItemIndexPath"];
     if (![exposedItemIndexPath isEqual:_exposedItemIndexPath]) {
         
@@ -157,7 +157,7 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
             
             TGLExposedLayout *exposedLayout = [self exposedLayout:exposedItemIndexPath];
             
-            [UIView animateWithDuration:self.layoutAnimationDuration delay:0 usingSpringWithDamping:1 initialSpringVelocity:0 options:0 animations:^{
+            [UIView animateWithDuration:self.layoutAnimationDuration delay:0 usingSpringWithDamping:1 initialSpringVelocity:velocity options:0 animations:^{
                 [self.collectionView setCollectionViewLayout:exposedLayout animated:YES];
             } completion:nil];
             
@@ -180,7 +180,7 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
             //
             [self.collectionView performBatchUpdates:^ {
                 
-                [UIView animateWithDuration:self.layoutAnimationDuration delay:0 usingSpringWithDamping:1 initialSpringVelocity:0 options:0 animations:^{
+                [UIView animateWithDuration:self.layoutAnimationDuration delay:0 usingSpringWithDamping:1 initialSpringVelocity:velocity options:0 animations:^{
                     [self.collectionView setContentOffset:self.stackedContentOffset animated:YES];
                     [self.collectionView setCollectionViewLayout:self.stackedLayout animated:YES];
                 } completion:nil];
