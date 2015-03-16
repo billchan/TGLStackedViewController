@@ -36,6 +36,10 @@
 @implementation TGLExposedLayout
 
 - (instancetype)initWithExposedItemIndex:(NSInteger)exposedItemIndex {
+    return [self initWithExposedItemIndex:exposedItemIndex indexPaths:nil];
+}
+
+- (instancetype)initWithExposedItemIndex:(NSInteger)exposedItemIndex indexPaths:(NSArray *)indexPaths {
     
     self = [super init];
     
@@ -46,6 +50,8 @@
         self.bottomOverlap = 20.0;
 
         self.exposedItemIndex = exposedItemIndex;
+        
+        self.indexPaths = indexPaths;
     }
     
     return self;
@@ -114,12 +120,12 @@
     }
 
     NSMutableDictionary *layoutAttributes = [NSMutableDictionary dictionary];
-    NSInteger itemCount = [self.collectionView numberOfItemsInSection:0];
+    NSInteger const ItemCount = [self.collectionView numberOfItemsInSection:0];
     
     CGFloat const BottomY = CGRectGetHeight(self.collectionView.bounds) - self.layoutMargin.top - self.layoutMargin.bottom  - self.collectionView.contentInset.top;
-    NSInteger const CardsCount = [self.collectionView numberOfItemsInSection:0];
+    NSUInteger const CardsCount = self.indexPaths.count;
 
-    for (NSInteger item = 0; item < itemCount; item++) {
+    for (NSInteger item = 0; item < ItemCount; item++) {
 
         NSIndexPath *indexPath = [NSIndexPath indexPathForItem:item inSection:0];
         UICollectionViewLayoutAttributes *attributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:indexPath];
@@ -129,21 +135,18 @@
             // Exposed item
             //
             attributes.frame = CGRectMake(self.layoutMargin.left, self.layoutMargin.top, itemSize.width, itemSize.height);
-            attributes.zIndex = CardsCount;
+            attributes.zIndex = 0;
 
-        } else {
+        } else if ([self.indexPaths containsObject:[NSIndexPath indexPathForItem:item inSection:0]]) {
         
-            // At max -bottomOverlapCount
-            // overlapping item(s) at the
-            // botton right below the
-            // exposed item
-            //
-            NSInteger count = MIN(CardsCount, itemCount - self.exposedItemIndex) - (item - self.exposedItemIndex);
-            if (item < self.exposedItemIndex) count--;
+            NSInteger count = CardsCount - (item - self.exposedItemIndex) + 1;
 
-            attributes.zIndex = count;
+            attributes.zIndex = item+1;
             
             attributes.frame = CGRectMake(self.layoutMargin.left, BottomY - count * self.bottomOverlap, itemSize.width, itemSize.height);
+        } else {
+            //hide completely
+            attributes.frame = CGRectMake(self.layoutMargin.left, BottomY-1, itemSize.width, itemSize.height);
         }
 
         layoutAttributes[indexPath] = attributes;

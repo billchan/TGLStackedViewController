@@ -34,6 +34,8 @@
  */
 @interface TGLExposedLayout : UICollectionViewLayout
 
+@property (nonatomic, strong) NSArray *indexPaths;
+
 /** Margins between collection view and items. Default is UIEdgeInsetsMake(40.0, 0.0, 0.0, 0.0) */
 @property (assign, nonatomic) UIEdgeInsets layoutMargin;
 
@@ -52,5 +54,6 @@
 @property (assign, nonatomic) CGFloat bottomOverlap;
 
 - (instancetype)initWithExposedItemIndex:(NSInteger)exposedItemIndex;
+- (instancetype)initWithExposedItemIndex:(NSInteger)exposedItemIndex indexPaths:(NSArray *)indexPaths;
 
 @end
