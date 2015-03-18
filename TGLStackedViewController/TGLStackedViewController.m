@@ -93,6 +93,7 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
     return self;
 }
 
+///edit here to customize stacked layout
 - (void)initController {
     
     _stackedLayout = [[TGLStackedLayout alloc] init];
@@ -100,20 +101,8 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
     _exposedLayoutMargin = UIEdgeInsetsMake(40.0, 0.0, 0.0, 0.0);
     _exposedItemSize = CGSizeZero;
     _exposedTopOverlap = 20.0;
-    _exposedBottomOverlap = 20.0;
-    
-    _layoutAnimationDuration = 0.5;
-}
-
-- (TGLExposedLayout *)exposedLayout:(NSIndexPath *)exposedItemIndexPath {
-    TGLExposedLayout *exposedLayout = [[TGLExposedLayout alloc] initWithExposedItemIndex:exposedItemIndexPath.item];
-    
-    exposedLayout.layoutMargin = self.exposedLayoutMargin;
-    exposedLayout.itemSize = self.exposedItemSize;
-    exposedLayout.topOverlap = self.exposedTopOverlap;
-    exposedLayout.bottomOverlap = self.exposedBottomOverlap;
-
-    return exposedLayout;
+    _exposedBottomOverlap = 50.0;
+    _exposedBottomOverlapCount = 2;
 }
 
 #pragma mark - View life cycle
@@ -138,15 +127,11 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
 #pragma mark - Accessors
 
 - (void)setExposedItemIndexPath:(NSIndexPath *)exposedItemIndexPath {
-    [self setExposedItemIndexPath:exposedItemIndexPath withInitialVelocity:0];
-}
 
-- (void)setExposedItemIndexPath:(NSIndexPath *)exposedItemIndexPath withInitialVelocity:(CGFloat)velocity {
-    [self willChangeValueForKey:@"exposedItemIndexPath"];
     if (![exposedItemIndexPath isEqual:_exposedItemIndexPath]) {
-        
+
         if (exposedItemIndexPath) {
-            
+
             // Select newly exposed item, possibly
             // deslecting the previous selection,
             // and animate to exposed layout
@@ -155,11 +140,15 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
             
             self.stackedContentOffset = self.collectionView.contentOffset;
             
-            TGLExposedLayout *exposedLayout = [self exposedLayout:exposedItemIndexPath];
+            TGLExposedLayout *exposedLayout = [[TGLExposedLayout alloc] initWithExposedItemIndex:exposedItemIndexPath.item];
             
-            [UIView animateWithDuration:self.layoutAnimationDuration delay:0 usingSpringWithDamping:1 initialSpringVelocity:velocity options:0 animations:^{
-                [self.collectionView setCollectionViewLayout:exposedLayout animated:YES];
-            } completion:nil];
+            exposedLayout.layoutMargin = self.exposedLayoutMargin;
+            exposedLayout.itemSize = self.exposedItemSize;
+            exposedLayout.topOverlap = self.exposedTopOverlap;
+            exposedLayout.bottomOverlap = self.exposedBottomOverlap;
+            exposedLayout.bottomOverlapCount = self.exposedBottomOverlapCount;
+
+            [self.collectionView setCollectionViewLayout:exposedLayout animated:YES];
             
         } else {
             
@@ -170,7 +159,7 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
             
             self.stackedLayout.overwriteContentOffset = YES;
             self.stackedLayout.contentOffset = self.stackedContentOffset;
-            
+
             // Issue #10: Collapsing on iOS 8
             //
             // NOTE: This solution produces a warning message
@@ -180,17 +169,14 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
             //
             [self.collectionView performBatchUpdates:^ {
                 
-                [UIView animateWithDuration:self.layoutAnimationDuration delay:0 usingSpringWithDamping:1 initialSpringVelocity:velocity options:0 animations:^{
-                    [self.collectionView setContentOffset:self.stackedContentOffset animated:YES];
-                    [self.collectionView setCollectionViewLayout:self.stackedLayout animated:YES];
-                } completion:nil];
-                
+                [self.collectionView setContentOffset:self.stackedContentOffset animated:YES];
+                [self.collectionView setCollectionViewLayout:self.stackedLayout animated:YES];
+            
             } completion:nil];
         }
         
         _exposedItemIndexPath = exposedItemIndexPath;
     }
-    [self didChangeValueForKey:@"exposedItemIndexPath"];
 }
 
 #pragma mark - CollectionViewDataSource protocol

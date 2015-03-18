@@ -31,6 +31,7 @@
 
 @property (weak, nonatomic) IBOutlet UIImageView *imageView;
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *consHgh;
 
 @end
 
@@ -41,8 +42,16 @@
     [super awakeFromNib];
 
     UIImage *image = [[UIImage imageNamed:@"Background"] resizableImageWithCapInsets:UIEdgeInsetsMake(10.0, 10.0, 10.0, 10.0)];
-    
+
     self.imageView.image = [image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    
+//    self.imageView.image = [UIImage imageNamed:@"kk"];
+//    self.imageView.contentMode = UIViewContentModeScaleAspectFit;
+//    self.imageView.backgroundColor = [UIColor whiteColor];
+    CGRect screenRect = [[UIScreen mainScreen] bounds];
+    CGFloat screenWidth = screenRect.size.width;
+    self.consHgh.constant  = 216./320. * screenWidth;
+    
     self.imageView.tintColor = self.color;
 
     self.nameLabel.text = self.title;

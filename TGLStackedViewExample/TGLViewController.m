@@ -52,6 +52,7 @@
 @interface TGLViewController ()
 
 @property (strong, readonly, nonatomic) NSMutableArray *cards;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *constraintHgh;
 
 @end
 

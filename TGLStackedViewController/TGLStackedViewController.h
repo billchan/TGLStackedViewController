@@ -29,13 +29,6 @@
 
 @interface TGLStackedViewController : UICollectionViewController <UIGestureRecognizerDelegate>
 
-/** 
- * The collection view layout animation when layouts are changed (i.e. stacked to exposed animation).
- *
- * Default value is 0.5
- */
-@property (nonatomic, assign) CGFloat layoutAnimationDuration;
-
 /** The collection view layout object used when all items are collapsed. */
 @property (strong, readonly, nonatomic) TGLStackedLayout *stackedLayout;
 
@@ -74,6 +67,15 @@
  * Default value is 20.0
  */
 @property (assign, nonatomic) CGFloat exposedBottomOverlap;
+
+/** Number of items overlapping below exposed item.
+ *
+ * Changes to this property take effect on next
+ * item being selected, i.e. exposed.
+ *
+ * Default value is 1
+ */
+@property (assign, nonatomic) NSUInteger exposedBottomOverlapCount;
 
 /** Index path of currently exposed item.
  *
@@ -132,7 +134,5 @@
  * @param toIndexPath New item indexPath
  */
 - (void)moveItemAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath;
-
-- (void)setExposedItemIndexPath:(NSIndexPath *)exposedItemIndexPath withInitialVelocity:(CGFloat)velocity;
 
 @end
