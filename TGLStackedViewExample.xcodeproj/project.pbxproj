@@ -22,9 +22,9 @@
 		3DF68F1418F31B0C00387458 /* TGLViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DF68F1318F31B0C00387458 /* TGLViewController.m */; };
 		3DF68F1618F31B0C00387458 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3DF68F1518F31B0C00387458 /* Images.xcassets */; };
 		3DF68F3418F31C1300387458 /* TGLCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DF68F3318F31C1300387458 /* TGLCollectionViewCell.m */; };
-		90FE05A21AB9BDE30060872B /* kk.png in Resources */ = {isa = PBXBuildFile; fileRef = 90FE059F1AB9BDE30060872B /* kk.png */; };
-		90FE05A31AB9BDE30060872B /* kk@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 90FE05A01AB9BDE30060872B /* kk@2x.png */; };
-		90FE05A41AB9BDE40060872B /* kk@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 90FE05A11AB9BDE30060872B /* kk@3x.png */; };
+		90FE05A81AB9D5CB0060872B /* kk.png in Resources */ = {isa = PBXBuildFile; fileRef = 90FE05A51AB9D5CB0060872B /* kk.png */; };
+		90FE05A91AB9D5CB0060872B /* kk@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 90FE05A61AB9D5CB0060872B /* kk@2x.png */; };
+		90FE05AA1AB9D5CB0060872B /* kk@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 90FE05A71AB9D5CB0060872B /* kk@3x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -53,9 +53,9 @@
 		3DF68F1518F31B0C00387458 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		3DF68F3218F31C1300387458 /* TGLCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGLCollectionViewCell.h; sourceTree = "<group>"; };
 		3DF68F3318F31C1300387458 /* TGLCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGLCollectionViewCell.m; sourceTree = "<group>"; };
-		90FE059F1AB9BDE30060872B /* kk.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = kk.png; path = ../../Documents/proj/iCash_ipayst4/Img/cards/kk.png; sourceTree = "<group>"; };
-		90FE05A01AB9BDE30060872B /* kk@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "kk@2x.png"; path = "../../Documents/proj/iCash_ipayst4/Img/cards/kk@2x.png"; sourceTree = "<group>"; };
-		90FE05A11AB9BDE30060872B /* kk@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "kk@3x.png"; path = "../../Documents/proj/iCash_ipayst4/Img/cards/kk@3x.png"; sourceTree = "<group>"; };
+		90FE05A51AB9D5CB0060872B /* kk.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = kk.png; path = ../../Img/cards/kk.png; sourceTree = "<group>"; };
+		90FE05A61AB9D5CB0060872B /* kk@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "kk@2x.png"; path = "../../Img/cards/kk@2x.png"; sourceTree = "<group>"; };
+		90FE05A71AB9D5CB0060872B /* kk@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "kk@3x.png"; path = "../../Img/cards/kk@3x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -88,9 +88,9 @@
 		3DF68EF118F31B0C00387458 = {
 			isa = PBXGroup;
 			children = (
-				90FE059F1AB9BDE30060872B /* kk.png */,
-				90FE05A01AB9BDE30060872B /* kk@2x.png */,
-				90FE05A11AB9BDE30060872B /* kk@3x.png */,
+				90FE05A51AB9D5CB0060872B /* kk.png */,
+				90FE05A61AB9D5CB0060872B /* kk@2x.png */,
+				90FE05A71AB9D5CB0060872B /* kk@3x.png */,
 				3DBF89AB190019980041CB92 /* TGLStackedViewController */,
 				3DF68F0318F31B0C00387458 /* TGLStackedViewExample */,
 				3DF68EFC18F31B0C00387458 /* Frameworks */,
@@ -199,12 +199,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				90FE05A21AB9BDE30060872B /* kk.png in Resources */,
+				90FE05A81AB9D5CB0060872B /* kk.png in Resources */,
 				3DF68F1618F31B0C00387458 /* Images.xcassets in Resources */,
 				3DCA5E9A1A121D7D0079EDC9 /* Launch Screen.xib in Resources */,
-				90FE05A41AB9BDE40060872B /* kk@3x.png in Resources */,
+				90FE05AA1AB9D5CB0060872B /* kk@3x.png in Resources */,
 				3DF68F0818F31B0C00387458 /* InfoPlist.strings in Resources */,
-				90FE05A31AB9BDE30060872B /* kk@2x.png in Resources */,
+				90FE05A91AB9D5CB0060872B /* kk@2x.png in Resources */,
 				3DF68F1118F31B0C00387458 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
