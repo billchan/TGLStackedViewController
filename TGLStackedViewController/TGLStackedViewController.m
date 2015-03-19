@@ -296,6 +296,11 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
     static CGPoint startCenter;
     static CGPoint startLocation;
     
+    if ([recognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
+        UIPanGestureRecognizer *panGest = (UIPanGestureRecognizer *)recognizer;
+        [panGest setTranslation:CGPointMake(0, 0) inView:self.movingView];
+    }
+    
     switch (recognizer.state) {
             
         case UIGestureRecognizerStateBegan: {
@@ -319,15 +324,11 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
                 UIImageView *movingImageView = [[UIImageView alloc] initWithImage:[self screenshotImageOfItem:movingCell]];
                 
                 [self.movingView addSubview:movingImageView];
-                if (self.exposedItemIndexPath) {
-                    [self.collectionView addSubview:self.movingView];
-                } else {
-                    [self.collectionView insertSubview:self.movingView aboveSubview:prevCell];
-                }
+                [self.collectionView insertSubview:self.movingView aboveSubview:prevCell];
                 
                 self.movingIndexPath = indexPath;
                                 
-                UICollectionViewLayout<TGLCollectionViewLayoutProtocol> *layout = self.collectionView.collectionViewLayout;
+                UICollectionViewLayout<TGLCollectionViewLayoutProtocol> *layout = (UICollectionViewLayout<TGLCollectionViewLayoutProtocol> *) self.collectionView.collectionViewLayout;
                 layout.movingIndexPath = self.movingIndexPath;
                 [layout invalidateLayout];
             }
@@ -379,8 +380,21 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
                 
                 self.movingIndexPath = nil;
                 
+                CGFloat initialVel = 0;
+                if ([recognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
+                    UIPanGestureRecognizer *panGest = (UIPanGestureRecognizer *)recognizer;
+                    
+                    UIView *view = self.movingView;
+                    CGPoint velGest = [panGest velocityInView:view];
+                    CGRect frame = view.frame;
+                    CGPoint origin = frame.origin;
+                    CGPoint velocity = CGPointMake(origin.x == 0 ? 0 : velGest.x / frame.origin.x , origin.y == 0 ? 0 : velGest.y / frame.origin.y) ;
+                    initialVel = velocity.y;
+                }
+                
+                
                 __weak typeof(self) weakSelf = self;
-                [UIView animateWithDuration:0.3 delay:0 usingSpringWithDamping:1 initialSpringVelocity:0 options:0 animations:^{
+                [UIView animateWithDuration:0.3 delay:0 usingSpringWithDamping:1 initialSpringVelocity:initialVel options:0 animations:^{
                     __strong typeof(weakSelf) strongSelf = weakSelf;
                     strongSelf.movingView.frame = layoutAttributes.frame;
                 } completion:^(BOOL finished) {
@@ -388,10 +402,11 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
                     [strongSelf.movingView removeFromSuperview];
                     strongSelf.movingView = nil;
                     
-                    UICollectionViewLayout<TGLCollectionViewLayoutProtocol> *layout = self.collectionView.collectionViewLayout;
+                    UICollectionViewLayout<TGLCollectionViewLayoutProtocol> *layout = (UICollectionViewLayout<TGLCollectionViewLayoutProtocol> *) self.collectionView.collectionViewLayout;
                     layout.movingIndexPath = self.movingIndexPath;
                     [layout invalidateLayout];
                 }];
+                
             }
             
             break;
