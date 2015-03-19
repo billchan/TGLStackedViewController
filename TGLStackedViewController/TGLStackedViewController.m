@@ -264,6 +264,10 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
     return YES;
 }
 
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+    return YES;
+}
+
 #pragma mark - Methods
 
 - (BOOL)canMoveItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -299,44 +303,62 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
     if ([recognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
         UIPanGestureRecognizer *panGest = (UIPanGestureRecognizer *)recognizer;
         [panGest setTranslation:CGPointMake(0, 0) inView:self.movingView];
+        
+//        if (!self.panGestureEnabled) {
+//            return;
+//        }
     }
+    
+    void (^initStartState)(void) = ^{
+        startLocation = [recognizer locationInView:self.collectionView];
+        
+        NSIndexPath *indexPath = [self.collectionView indexPathForItemAtPoint:startLocation];
+        
+        if (indexPath && [self canMoveItemAtIndexPath:indexPath]) {
+            
+            UICollectionViewCell *movingCell = [self.collectionView cellForItemAtIndexPath:indexPath];
+            UICollectionViewCell *prevCell = [self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:indexPath.item-1 inSection:indexPath.section]];
+            
+            self.movingView = [[UIView alloc] initWithFrame:movingCell.frame];
+            self.movingView.backgroundColor = [UIColor redColor];
+            self.movingView.layer.cornerRadius = movingCell.layer.cornerRadius;
+            self.movingView.layer.masksToBounds = YES;
+            
+            startCenter = self.movingView.center;
+            
+            UIImageView *movingImageView = [[UIImageView alloc] initWithImage:[self screenshotImageOfItem:movingCell]];
+            [self.movingView addSubview:movingImageView];
+            
+            if (prevCell == nil) {
+                [self.collectionView addSubview:self.movingView];
+                [self.collectionView sendSubviewToBack:self.movingView];
+            } else {
+                [self.collectionView insertSubview:self.movingView aboveSubview:prevCell];
+            }
+            
+            self.movingIndexPath = indexPath;
+            
+            UICollectionViewLayout<TGLCollectionViewLayoutProtocol> *layout = (UICollectionViewLayout<TGLCollectionViewLayoutProtocol> *) self.collectionView.collectionViewLayout;
+            layout.movingIndexPath = self.movingIndexPath;
+            [layout invalidateLayout];
+        }
+    };
     
     switch (recognizer.state) {
             
         case UIGestureRecognizerStateBegan: {
-            
-            startLocation = [recognizer locationInView:self.collectionView];
-
-            NSIndexPath *indexPath = [self.collectionView indexPathForItemAtPoint:startLocation];
-
-            if (indexPath && [self canMoveItemAtIndexPath:indexPath]) {
-                
-                UICollectionViewCell *movingCell = [self.collectionView cellForItemAtIndexPath:indexPath];
-                UICollectionViewCell *prevCell = [self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:indexPath.item-1 inSection:indexPath.section]];
-
-                self.movingView = [[UIView alloc] initWithFrame:movingCell.frame];
-                self.movingView.backgroundColor = [UIColor redColor];
-                self.movingView.layer.cornerRadius = movingCell.layer.cornerRadius;
-                self.movingView.layer.masksToBounds = YES;
-                
-                startCenter = self.movingView.center;
-                
-                UIImageView *movingImageView = [[UIImageView alloc] initWithImage:[self screenshotImageOfItem:movingCell]];
-                
-                [self.movingView addSubview:movingImageView];
-                [self.collectionView insertSubview:self.movingView aboveSubview:prevCell];
-                
-                self.movingIndexPath = indexPath;
-                                
-                UICollectionViewLayout<TGLCollectionViewLayoutProtocol> *layout = (UICollectionViewLayout<TGLCollectionViewLayoutProtocol> *) self.collectionView.collectionViewLayout;
-                layout.movingIndexPath = self.movingIndexPath;
-                [layout invalidateLayout];
+            if (recognizer == self.moveLongPressGestureRecognizer) {
+                self.collectionView.scrollEnabled = NO;
             }
-
+            initStartState();
             break;
         }
 
         case UIGestureRecognizerStateChanged: {
+            
+            if (!self.movingView) {
+                initStartState();
+            }
             
             if (self.movingIndexPath) {
 
@@ -346,23 +368,25 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
                 currentCenter.y += (currentLocation.y - startLocation.y);
                 
                 self.movingView.center = currentCenter;
-
-                if (currentLocation.y < CGRectGetMinY(self.collectionView.bounds) + SCROLL_ZONE_TOP && self.collectionView.contentOffset.y > SCROLL_ZONE_TOP) {
-                    
-                    [self startScrollingUp];
-
-                } else if (currentLocation.y > CGRectGetMaxY(self.collectionView.bounds) - SCROLL_ZONE_BOTTOM && self.collectionView.contentOffset.y < self.collectionView.contentSize.height - CGRectGetHeight(self.collectionView.bounds) - SCROLL_ZONE_BOTTOM) {
-                    
-                    [self startScrollingDown];
-                    
-                } else if (self.scrollDirection != TGLStackedViewControllerScrollDirectionNone) {
-                    
-                    [self stopScrolling];
-                }
                 
-                if (self.scrollDirection == TGLStackedViewControllerScrollDirectionNone) {
+                if (recognizer == self.moveLongPressGestureRecognizer) {
+                    if (currentLocation.y < CGRectGetMinY(self.collectionView.bounds) + SCROLL_ZONE_TOP && self.collectionView.contentOffset.y > SCROLL_ZONE_TOP) {
+                        
+                        [self startScrollingUp];
+                        
+                    } else if (currentLocation.y > CGRectGetMaxY(self.collectionView.bounds) - SCROLL_ZONE_BOTTOM && self.collectionView.contentOffset.y < self.collectionView.contentSize.height - CGRectGetHeight(self.collectionView.bounds) - SCROLL_ZONE_BOTTOM) {
+                        
+                        [self startScrollingDown];
+                        
+                    } else if (self.scrollDirection != TGLStackedViewControllerScrollDirectionNone) {
+                        
+                        [self stopScrolling];
+                    }
                     
-                    [self updateLayoutAtMovingLocation:currentLocation];
+                    if (self.scrollDirection == TGLStackedViewControllerScrollDirectionNone) {
+                        
+                        [self updateLayoutAtMovingLocation:currentLocation];
+                    }
                 }
             }
 
@@ -370,7 +394,12 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
         }
 
         case UIGestureRecognizerStateEnded:
+        case UIGestureRecognizerStateFailed:
         case UIGestureRecognizerStateCancelled: {
+            
+            if (recognizer == self.moveLongPressGestureRecognizer) {
+                self.collectionView.scrollEnabled = YES;
+            }
 
             if (self.movingIndexPath) {
                 
@@ -390,6 +419,10 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
                     CGPoint origin = frame.origin;
                     CGPoint velocity = CGPointMake(origin.x == 0 ? 0 : velGest.x / frame.origin.x , origin.y == 0 ? 0 : velGest.y / frame.origin.y) ;
                     initialVel = velocity.y;
+                }
+                
+                if (initialVel > 0.3) {
+//                    self.exposedItemIndexPath = nil;
                 }
                 
                 

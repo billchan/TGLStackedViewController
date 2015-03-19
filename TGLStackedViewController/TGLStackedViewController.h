@@ -29,6 +29,8 @@
 
 @interface TGLStackedViewController : UICollectionViewController <UIGestureRecognizerDelegate>
 
+@property (nonatomic, assign) BOOL panGestureEnabled;
+
 /** 
  * The collection view layout animation when layouts are changed (i.e. stacked to exposed animation).
  *
