@@ -55,6 +55,10 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
 
 @synthesize stackedLayout = _stackedLayout;
 
+- (UICollectionViewLayout *)collectionViewLayout {
+    return self.collectionView.collectionViewLayout;
+}
+
 - (instancetype)init {
 
     self = [super init];
@@ -309,7 +313,11 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
                 movingImageView.alpha = 0.0f;
                 
                 [self.movingView addSubview:movingImageView];
-                [self.collectionView insertSubview:self.movingView aboveSubview:prevCell];
+                if (self.exposedItemIndexPath) {
+                    [self.collectionView addSubview:self.movingView];
+                } else {
+                    [self.collectionView insertSubview:self.movingView aboveSubview:prevCell];
+                }
                 
                 self.movingIndexPath = indexPath;
                 
@@ -319,8 +327,9 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
                     movingImageView.alpha = 1.0f;
                 } completion:nil];
                 
-                self.stackedLayout.movingIndexPath = self.movingIndexPath;
-                [self.stackedLayout invalidateLayout];
+                UICollectionViewLayout<TGLCollectionViewLayoutProtocol> *layout = self.collectionView.collectionViewLayout;
+                layout.movingIndexPath = self.movingIndexPath;
+                [layout invalidateLayout];
             }
 
             break;
@@ -366,7 +375,7 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
                 
                 [self stopScrolling];
                 
-                UICollectionViewLayoutAttributes *layoutAttributes = [self.stackedLayout layoutAttributesForItemAtIndexPath:self.movingIndexPath];
+                UICollectionViewLayoutAttributes *layoutAttributes = [self.collectionView.collectionViewLayout layoutAttributesForItemAtIndexPath:self.movingIndexPath];
                 
                 self.movingIndexPath = nil;
                 
@@ -379,8 +388,9 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
                     [strongSelf.movingView removeFromSuperview];
                     strongSelf.movingView = nil;
                     
-                    self.stackedLayout.movingIndexPath = nil;
-                    [strongSelf.stackedLayout invalidateLayout];
+                    UICollectionViewLayout<TGLCollectionViewLayoutProtocol> *layout = self.collectionView.collectionViewLayout;
+                    layout.movingIndexPath = self.movingIndexPath;
+                    [layout invalidateLayout];
                 }];
             }
             

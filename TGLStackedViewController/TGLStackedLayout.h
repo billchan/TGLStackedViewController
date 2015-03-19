@@ -23,9 +23,9 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-#import <UIKit/UIKit.h>
+#import "TGLCollectionViewLayoutProtocol.h"
 
-@interface TGLStackedLayout : UICollectionViewLayout
+@interface TGLStackedLayout : UICollectionViewLayout <TGLCollectionViewLayoutProtocol>
 
 /** Margins between collection view and items. Default is UIEdgeInsetsMake(20.0, 0.0, 0.0, 0.0) */
 @property (assign, nonatomic) UIEdgeInsets layoutMargin;

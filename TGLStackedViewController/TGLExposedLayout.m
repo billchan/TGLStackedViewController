@@ -130,6 +130,10 @@
         NSIndexPath *indexPath = [NSIndexPath indexPathForItem:item inSection:0];
         UICollectionViewLayoutAttributes *attributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:indexPath];
         
+        // The moving item is hidden
+        //
+        attributes.hidden = [attributes.indexPath isEqual:self.movingIndexPath];
+        
         if (item == self.exposedItemIndex) {
             
             // Exposed item

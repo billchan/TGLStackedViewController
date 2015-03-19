@@ -50,6 +50,7 @@
 		3DF68F1518F31B0C00387458 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		3DF68F3218F31C1300387458 /* TGLCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGLCollectionViewCell.h; sourceTree = "<group>"; };
 		3DF68F3318F31C1300387458 /* TGLCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGLCollectionViewCell.m; sourceTree = "<group>"; };
+		4D86C23E1ABB45F10093EBB6 /* TGLCollectionViewLayoutProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGLCollectionViewLayoutProtocol.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,6 +70,7 @@
 		3DBF89AB190019980041CB92 /* TGLStackedViewController */ = {
 			isa = PBXGroup;
 			children = (
+				4D86C23E1ABB45F10093EBB6 /* TGLCollectionViewLayoutProtocol.h */,
 				3DBF89AC190019980041CB92 /* TGLExposedLayout.h */,
 				3DBF89AD190019980041CB92 /* TGLExposedLayout.m */,
 				3DBF89AE190019980041CB92 /* TGLStackedLayout.h */,

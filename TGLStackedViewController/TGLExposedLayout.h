@@ -24,6 +24,7 @@
 //  THE SOFTWARE.
 
 #import <UIKit/UIKit.h>
+#import "TGLCollectionViewLayoutProtocol.h"
 
 /** Collection view layout showing a single exposed
  *  item full size and adjacent items collapsed with
@@ -32,7 +33,7 @@
  * Scrolling is not possible since -collectionViewContentSize
  * is the same as the collection view's bounds.size.
  */
-@interface TGLExposedLayout : UICollectionViewLayout
+@interface TGLExposedLayout : UICollectionViewLayout <TGLCollectionViewLayoutProtocol>
 
 @property (nonatomic, strong) NSArray *indexPaths;
 
@@ -52,6 +53,9 @@
 
 /** Amount of overlap for items below exposed item. Default 20.0 */
 @property (assign, nonatomic) CGFloat bottomOverlap;
+
+/** Index path of item currently being moved, and thus being hidden */
+@property (strong, nonatomic) NSIndexPath *movingIndexPath;
 
 - (instancetype)initWithExposedItemIndex:(NSInteger)exposedItemIndex;
 - (instancetype)initWithExposedItemIndex:(NSInteger)exposedItemIndex indexPaths:(NSArray *)indexPaths;
