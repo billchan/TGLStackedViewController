@@ -44,7 +44,8 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
 
 @property (strong, nonatomic) UIView *movingView;
 @property (strong, nonatomic) NSIndexPath *movingIndexPath;
-@property (strong, nonatomic) UILongPressGestureRecognizer *moveGestureRecognizer;
+@property (strong, nonatomic) UILongPressGestureRecognizer *moveLongPressGestureRecognizer;
+@property (strong, nonatomic) UILongPressGestureRecognizer *movePanGestureRecognizer;
 
 @property (assign, nonatomic) TGLStackedViewControllerScrollDirection scrollDirection;
 @property (strong, nonatomic) CADisplayLink *scrollDisplayLink;
@@ -126,10 +127,14 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
 
     self.collectionView.collectionViewLayout = self.stackedLayout;
     
-    self.moveGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
-    self.moveGestureRecognizer.delegate = self;
+    self.moveLongPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
+    self.moveLongPressGestureRecognizer.delegate = self;
+    
+    self.movePanGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
+    self.movePanGestureRecognizer.delegate = self;
 
-    [self.collectionView addGestureRecognizer:self.moveGestureRecognizer];
+    [self.collectionView addGestureRecognizer:self.moveLongPressGestureRecognizer];
+    [self.collectionView addGestureRecognizer:self.movePanGestureRecognizer];
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
@@ -248,11 +253,15 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
 #pragma mark - GestureRecognizerDelegate protocol
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
+    if (gestureRecognizer == self.movePanGestureRecognizer &&
+        self.collectionView.collectionViewLayout == self.stackedLayout) {
+        return NO;
+    } else if (gestureRecognizer == self.moveLongPressGestureRecognizer &&
+               self.collectionView.collectionViewLayout != self.stackedLayout) {
+        return NO;
+    }
 
-    // Long presses, i.e. moving items,
-    // only allowed when stacked
-    //
-    return YES;//(self.collectionView.collectionViewLayout == self.stackedLayout);
+    return YES;
 }
 
 #pragma mark - Methods
@@ -282,8 +291,7 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
 }
 
 #pragma mark - Actions
-
-- (IBAction)handleLongPress:(UILongPressGestureRecognizer *)recognizer {
+- (void)handleGesture:(UIGestureRecognizer *)recognizer {
     
     static CGPoint startCenter;
     static CGPoint startLocation;
@@ -454,7 +462,7 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
 
                 [self stopScrolling];
 
-                CGPoint currentLocation = [self.moveGestureRecognizer locationInView:self.collectionView];
+                CGPoint currentLocation = [self.moveLongPressGestureRecognizer locationInView:self.collectionView];
                 
                 [self updateLayoutAtMovingLocation:currentLocation];
             }
@@ -481,7 +489,7 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
                 
                 [self stopScrolling];
                 
-                CGPoint currentLocation = [self.moveGestureRecognizer locationInView:self.collectionView];
+                CGPoint currentLocation = [self.moveLongPressGestureRecognizer locationInView:self.collectionView];
                 
                 [self updateLayoutAtMovingLocation:currentLocation];
             }
