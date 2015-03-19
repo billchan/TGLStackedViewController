@@ -310,8 +310,6 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
                 
                 UIImageView *movingImageView = [[UIImageView alloc] initWithImage:[self screenshotImageOfItem:movingCell]];
                 
-                movingImageView.alpha = 0.0f;
-                
                 [self.movingView addSubview:movingImageView];
                 if (self.exposedItemIndexPath) {
                     [self.collectionView addSubview:self.movingView];
@@ -320,13 +318,7 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
                 }
                 
                 self.movingIndexPath = indexPath;
-                
-                __weak typeof(self) weakSelf = self;
-                [UIView animateWithDuration:0.3 delay:0 usingSpringWithDamping:1 initialSpringVelocity:0 options:0 animations:^{
-                    __strong typeof(weakSelf) strongSelf = weakSelf;
-                    movingImageView.alpha = 1.0f;
-                } completion:nil];
-                
+                                
                 UICollectionViewLayout<TGLCollectionViewLayoutProtocol> *layout = self.collectionView.collectionViewLayout;
                 layout.movingIndexPath = self.movingIndexPath;
                 [layout invalidateLayout];
