@@ -303,10 +303,6 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
     if ([recognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
         UIPanGestureRecognizer *panGest = (UIPanGestureRecognizer *)recognizer;
         [panGest setTranslation:CGPointMake(0, 0) inView:self.movingView];
-        
-//        if (!self.panGestureEnabled) {
-//            return;
-//        }
     }
     
     void (^initStartState)(void) = ^{
@@ -347,6 +343,10 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
     switch (recognizer.state) {
             
         case UIGestureRecognizerStateBegan: {
+            if (!self.panGestureEnabled) {
+                return;
+            }
+
             if (recognizer == self.moveLongPressGestureRecognizer) {
                 self.collectionView.scrollEnabled = NO;
             }
@@ -355,7 +355,10 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
         }
 
         case UIGestureRecognizerStateChanged: {
-            
+            if (!self.panGestureEnabled) {
+                return;
+            }
+
             if (!self.movingView) {
                 initStartState();
             }
