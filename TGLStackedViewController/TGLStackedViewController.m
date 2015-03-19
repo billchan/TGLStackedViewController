@@ -45,7 +45,7 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
 @property (strong, nonatomic) UIView *movingView;
 @property (strong, nonatomic) NSIndexPath *movingIndexPath;
 @property (strong, nonatomic) UILongPressGestureRecognizer *moveLongPressGestureRecognizer;
-@property (strong, nonatomic) UILongPressGestureRecognizer *movePanGestureRecognizer;
+@property (strong, nonatomic) UIPanGestureRecognizer *movePanGestureRecognizer;
 
 @property (assign, nonatomic) TGLStackedViewControllerScrollDirection scrollDirection;
 @property (strong, nonatomic) CADisplayLink *scrollDisplayLink;
