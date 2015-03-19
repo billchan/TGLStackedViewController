@@ -27,8 +27,6 @@
 #import "TGLStackedLayout.h"
 #import "TGLExposedLayout.h"
 
-#define MOVE_ZOOM 0.95
-
 #define SCROLL_PER_FRAME 5.0
 #define SCROLL_ZONE_TOP 100.0
 #define SCROLL_ZONE_BOTTOM 100.0
@@ -250,7 +248,7 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
     // Long presses, i.e. moving items,
     // only allowed when stacked
     //
-    return (self.collectionView.collectionViewLayout == self.stackedLayout);
+    return YES;//(self.collectionView.collectionViewLayout == self.stackedLayout);
 }
 
 #pragma mark - Methods
@@ -297,8 +295,12 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
             if (indexPath && [self canMoveItemAtIndexPath:indexPath]) {
                 
                 UICollectionViewCell *movingCell = [self.collectionView cellForItemAtIndexPath:indexPath];
-                
+                UICollectionViewCell *prevCell = [self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:indexPath.item-1 inSection:indexPath.section]];
+
                 self.movingView = [[UIView alloc] initWithFrame:movingCell.frame];
+                self.movingView.backgroundColor = [UIColor redColor];
+                self.movingView.layer.cornerRadius = movingCell.layer.cornerRadius;
+                self.movingView.layer.masksToBounds = YES;
                 
                 startCenter = self.movingView.center;
                 
@@ -307,27 +309,15 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
                 movingImageView.alpha = 0.0f;
                 
                 [self.movingView addSubview:movingImageView];
-                [self.collectionView addSubview:self.movingView];
+                [self.collectionView insertSubview:self.movingView aboveSubview:prevCell];
                 
                 self.movingIndexPath = indexPath;
                 
                 __weak typeof(self) weakSelf = self;
-                
-                [UIView animateWithDuration:0.3
-                                      delay:0.0
-                                    options:UIViewAnimationOptionBeginFromCurrentState
-                                 animations:^ (void) {
-                                     
-                                     __strong typeof(self) strongSelf = weakSelf;
-                                     
-                                     if (strongSelf) {
-                                         
-                                         strongSelf.movingView.transform = CGAffineTransformMakeScale(MOVE_ZOOM, MOVE_ZOOM);
-                                         movingImageView.alpha = 1.0f;
-                                     }
-                                 }
-                                 completion:^ (BOOL finished) {
-                                 }];
+                [UIView animateWithDuration:0.3 delay:0 usingSpringWithDamping:1 initialSpringVelocity:0 options:0 animations:^{
+                    __strong typeof(weakSelf) strongSelf = weakSelf;
+                    movingImageView.alpha = 1.0f;
+                } completion:nil];
                 
                 self.stackedLayout.movingIndexPath = self.movingIndexPath;
                 [self.stackedLayout invalidateLayout];
@@ -381,33 +371,17 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
                 self.movingIndexPath = nil;
                 
                 __weak typeof(self) weakSelf = self;
-                
-                [UIView animateWithDuration:0.3
-                                      delay:0.0
-                                    options:UIViewAnimationOptionBeginFromCurrentState
-                                 animations:^ (void) {
-                                     
-                                     __strong typeof(self) strongSelf = weakSelf;
-                                     
-                                     if (strongSelf) {
-                                         
-                                         strongSelf.movingView.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
-                                         strongSelf.movingView.frame = layoutAttributes.frame;
-                                     }
-                                 }
-                                 completion:^ (BOOL finished) {
-                                     
-                                     __strong typeof(self) strongSelf = weakSelf;
-                                     
-                                     if (strongSelf) {
-                                         
-                                         [strongSelf.movingView removeFromSuperview];
-                                         strongSelf.movingView = nil;
-                                         
-                                         self.stackedLayout.movingIndexPath = nil;
-                                         [strongSelf.stackedLayout invalidateLayout];
-                                     }
-                                 }];
+                [UIView animateWithDuration:0.3 delay:0 usingSpringWithDamping:1 initialSpringVelocity:0 options:0 animations:^{
+                    __strong typeof(weakSelf) strongSelf = weakSelf;
+                    strongSelf.movingView.frame = layoutAttributes.frame;
+                } completion:^(BOOL finished) {
+                    __strong typeof(weakSelf) strongSelf = weakSelf;
+                    [strongSelf.movingView removeFromSuperview];
+                    strongSelf.movingView = nil;
+                    
+                    self.stackedLayout.movingIndexPath = nil;
+                    [strongSelf.stackedLayout invalidateLayout];
+                }];
             }
             
             break;
@@ -543,6 +517,14 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
                                                           updateBlock:^ (NSIndexPath *fromIndexPath, NSIndexPath *toIndexPath){
                                                               
                                                               [self moveItemAtIndexPath:fromIndexPath toIndexPath:toIndexPath];
+                                                              
+                                                              if (fromIndexPath.item > toIndexPath.item) {
+                                                                  UICollectionViewCell *cell = [self.collectionView cellForItemAtIndexPath:toIndexPath];
+                                                                  [self.collectionView insertSubview:self.movingView belowSubview:cell];
+                                                              } else if (fromIndexPath.item < toIndexPath.item) {
+                                                                  UICollectionViewCell *cell = [self.collectionView cellForItemAtIndexPath:toIndexPath];
+                                                                  [self.collectionView insertSubview:self.movingView belowSubview:cell];
+                                                              }
                                                               
                                                               self.movingIndexPath = toIndexPath;
                                                           }];
