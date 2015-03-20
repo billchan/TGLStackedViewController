@@ -29,6 +29,26 @@
 
 @interface TGLStackedViewController : UICollectionViewController <UIGestureRecognizerDelegate>
 
+/**
+ * The min velocity needed by the pan gesture to be considered
+ * a toss/fling. If toss/fling, the exposedItemIndex is set to nil and animates
+ * with the toss/fling velocity
+ *
+ * Default value is 0.3
+ */
+@property (nonatomic, assign) CGFloat minTossVelocity;
+
+/**
+ * The min offset needed from the pan gesture to set the
+ * exposedItemIndex to nil and animate
+ *
+ * Default value is 100
+ */
+@property (nonatomic, assign) CGFloat minOffsetForReset;
+
+/**
+ * Whether or not the pan gesture is enabled
+ */
 @property (nonatomic, assign) BOOL panGestureEnabled;
 
 /** 

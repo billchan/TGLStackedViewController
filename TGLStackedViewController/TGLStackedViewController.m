@@ -110,6 +110,8 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
     _exposedBottomOverlap = 20.0;
     
     _layoutAnimationDuration = 0.5;
+    _minTossVelocity = 0.5;
+    _minOffsetForReset = 100;
 }
 
 - (TGLExposedLayout *)exposedLayout:(NSIndexPath *)exposedItemIndexPath {
@@ -380,10 +382,11 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
         UIPanGestureRecognizer *panGest = (UIPanGestureRecognizer *)recognizer;
         
         UIView *view = self.movingView;
-        CGPoint velGest = [panGest velocityInView:view];
+        CGPoint velGest = [panGest velocityInView:recognizer.view];
         CGRect frame = view.frame;
         CGPoint origin = frame.origin;
-        CGPoint velocity = CGPointMake(origin.x == 0 ? 0 : velGest.x / frame.origin.x , origin.y == 0 ? 0 : velGest.y / frame.origin.y) ;
+        CGPoint velocity = CGPointMake(origin.x == 0 ? 0 : velGest.x / frame.origin.x ,
+                                       origin.y == 0 ? 0 : velGest.y / frame.origin.y) ;
         initialVel = velocity.y;
     }
     
@@ -398,7 +401,11 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
         [layout invalidateLayout];
     };
     
-    if ([recognizer isKindOfClass:[UIPanGestureRecognizer class]] && true) {
+    NSLog(@"Initial Vel: %d %@", initialVel, initialVel > self.minTossVelocity ? @"YES" : @"NO");
+    
+    CGFloat originalY = CGRectGetMinY(self.movingCell.frame);
+    if ([recognizer isKindOfClass:[UIPanGestureRecognizer class]] &&
+        (initialVel > self.minTossVelocity || fabsf(originalY-CGRectGetMinY(self.movingView.frame)) > self.minOffsetForReset)) {
         self.movingCell.frame = self.movingView.frame;
         completed(YES);
         [self setExposedItemIndexPath:nil withInitialVelocity:initialVel];
@@ -417,7 +424,7 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
 - (void)handleGesture:(UIGestureRecognizer *)recognizer {
     if ([recognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
         UIPanGestureRecognizer *panGest = (UIPanGestureRecognizer *)recognizer;
-        [panGest setTranslation:CGPointMake(0, 0) inView:self.movingView];
+        [panGest setTranslation:CGPointMake(0, 0) inView:recognizer.view];
     }
     
     switch (recognizer.state) {
