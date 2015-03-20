@@ -29,6 +29,9 @@
 
 @interface TGLStackedViewController : UICollectionViewController <UIGestureRecognizerDelegate>
 
+@property (nonatomic, readonly) UILongPressGestureRecognizer *moveLongPressGestureRecognizer;
+@property (nonatomic, readonly) UIPanGestureRecognizer *movePanGestureRecognizer;
+
 /**
  * The min velocity needed by the pan gesture to be considered
  * a toss/fling. If toss/fling, the exposedItemIndex is set to nil and animates

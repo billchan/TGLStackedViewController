@@ -44,8 +44,6 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
 
 @property (strong, nonatomic) UIView *movingView;
 @property (strong, nonatomic) NSIndexPath *movingIndexPath;
-@property (strong, nonatomic) UILongPressGestureRecognizer *moveLongPressGestureRecognizer;
-@property (strong, nonatomic) UIPanGestureRecognizer *movePanGestureRecognizer;
 
 @property (assign, nonatomic) TGLStackedViewControllerScrollDirection scrollDirection;
 @property (strong, nonatomic) CADisplayLink *scrollDisplayLink;
@@ -127,16 +125,16 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
 
 #pragma mark - View life cycle
 
-- (void)viewDidLoad {
+- (void)loadView {
     
-    [super viewDidLoad];
+    [super loadView];
 
     self.collectionView.collectionViewLayout = self.stackedLayout;
     
-    self.moveLongPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
+    _moveLongPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
     self.moveLongPressGestureRecognizer.delegate = self;
     
-    self.movePanGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
+    _movePanGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
     self.movePanGestureRecognizer.delegate = self;
 
     [self.collectionView addGestureRecognizer:self.moveLongPressGestureRecognizer];
@@ -440,13 +438,11 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
         }
 
         case UIGestureRecognizerStateChanged: {
-            if ([recognizer isKindOfClass:[UIPanGestureRecognizer class]] && !self.panGestureEnabled) {
-                return;
-            }
             if (!self.movingView) {
                 [self gestureRecognizerStateBegan:recognizer];
             }
             if (self.movingIndexPath) {
+                NSLog(@"moved!");
                 [self gestureRecognizerStateChanged:recognizer];
             }
             break;
@@ -455,11 +451,11 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
         case UIGestureRecognizerStateEnded:
         case UIGestureRecognizerStateFailed:
         case UIGestureRecognizerStateCancelled: {
-            if (recognizer == self.moveLongPressGestureRecognizer) {
-                self.collectionView.scrollEnabled = YES;
-            }
             if (self.movingIndexPath) {
                 [self gestureRecognizerStateEnded:recognizer];
+            }
+            if (recognizer == self.moveLongPressGestureRecognizer) {
+                self.collectionView.scrollEnabled = YES;
             }
             break;
         }
