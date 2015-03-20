@@ -52,7 +52,7 @@
 /**
  * Called when `setExposedItemIndexPath:withInitialVelocity:` completes the animation
  */
-@property (nonatomic, copy) void (^exposedItemIndexPathOnCompletion)(void);
+@property (nonatomic, copy) void (^exposedItemIndexPathOnCompletion)(NSIndexPath *exposedItemIndexPath);
 
 /**
  * Whether or not the pan gesture is enabled

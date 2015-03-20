@@ -172,7 +172,7 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
                 [self.collectionView setCollectionViewLayout:exposedLayout animated:YES];
             } completion:^(BOOL finished) {
                 if (self.exposedItemIndexPathOnCompletion) {
-                    self.exposedItemIndexPathOnCompletion();
+                    self.exposedItemIndexPathOnCompletion(exposedItemIndexPath);
                 }
             }];
             
@@ -200,7 +200,7 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
                     [self.collectionView setCollectionViewLayout:self.stackedLayout animated:YES];
                 } completion:^(BOOL finished) {
                     if (self.exposedItemIndexPathOnCompletion) {
-                        self.exposedItemIndexPathOnCompletion();
+                        self.exposedItemIndexPathOnCompletion(exposedItemIndexPath);
                     }
                 }];
                 
