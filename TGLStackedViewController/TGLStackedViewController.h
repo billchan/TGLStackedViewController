@@ -50,6 +50,11 @@
 @property (nonatomic, assign) CGFloat minOffsetForReset;
 
 /**
+ * Called when `setExposedItemIndexPath:withInitialVelocity:` completes the animation
+ */
+@property (nonatomic, copy) void (^exposedItemIndexPathOnCompletion)(void);
+
+/**
  * Whether or not the pan gesture is enabled
  */
 @property (nonatomic, assign) BOOL panGestureEnabled;

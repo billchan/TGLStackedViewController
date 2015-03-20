@@ -170,7 +170,11 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
             
             [UIView animateWithDuration:self.layoutAnimationDuration delay:0 usingSpringWithDamping:1 initialSpringVelocity:velocity options:0 animations:^{
                 [self.collectionView setCollectionViewLayout:exposedLayout animated:YES];
-            } completion:nil];
+            } completion:^(BOOL finished) {
+                if (self.exposedItemIndexPathOnCompletion) {
+                    self.exposedItemIndexPathOnCompletion();
+                }
+            }];
             
         } else {
             
@@ -194,7 +198,11 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
                 [UIView animateWithDuration:self.layoutAnimationDuration delay:0 usingSpringWithDamping:1 initialSpringVelocity:velocity options:0 animations:^{
                     [self.collectionView setContentOffset:self.stackedContentOffset animated:YES];
                     [self.collectionView setCollectionViewLayout:self.stackedLayout animated:YES];
-                } completion:nil];
+                } completion:^(BOOL finished) {
+                    if (self.exposedItemIndexPathOnCompletion) {
+                        self.exposedItemIndexPathOnCompletion();
+                    }
+                }];
                 
             } completion:nil];
         }
@@ -438,6 +446,9 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
         }
 
         case UIGestureRecognizerStateChanged: {
+            if ([recognizer isKindOfClass:[UIPanGestureRecognizer class]] && !self.panGestureEnabled) {
+                return;
+            }
             if (!self.movingView) {
                 [self gestureRecognizerStateBegan:recognizer];
             }
