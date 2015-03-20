@@ -66,12 +66,6 @@
                                         <imageView hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="3cu-oD-mtZ">
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="120"/>
                                         </imageView>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="kk.png" translatesAutoresizingMaskIntoConstraints="NO" id="vBb-4e-oE9">
-                                            <rect key="frame" x="0.0" y="0.0" width="320" height="210"/>
-                                            <constraints>
-                                                <constraint firstAttribute="height" constant="210" id="jsm-rd-4Sd"/>
-                                            </constraints>
-                                        </imageView>
                                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CLY-xS-Oa7">
                                             <rect key="frame" x="20" y="20" width="280" height="28"/>
                                             <constraints>
@@ -81,6 +75,21 @@
                                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
+                                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Mnv-vh-qsv">
+                                            <rect key="frame" x="20" y="20" width="30" height="30"/>
+                                            <state key="normal" title="Flip">
+                                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                            </state>
+                                            <connections>
+                                                <action selector="handleBtnFlip:" destination="brs-Q3-DM1" eventType="touchUpInside" id="DjY-iJ-ykf"/>
+                                            </connections>
+                                        </button>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="kk.png" translatesAutoresizingMaskIntoConstraints="NO" id="vBb-4e-oE9">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="210"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="210" id="jsm-rd-4Sd"/>
+                                            </constraints>
+                                        </imageView>
                                     </subviews>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 </view>
@@ -99,6 +108,7 @@
                                 </constraints>
                                 <size key="customSize" width="320" height="120"/>
                                 <connections>
+                                    <outlet property="btnFlip" destination="Mnv-vh-qsv" id="7f2-Rg-vn0"/>
                                     <outlet property="consHgh" destination="jsm-rd-4Sd" id="CTr-iW-a81"/>
                                     <outlet property="imageView" destination="3cu-oD-mtZ" id="lLL-Kz-Bo5"/>
                                     <outlet property="nameLabel" destination="CLY-xS-Oa7" id="2aU-VI-QmO"/>

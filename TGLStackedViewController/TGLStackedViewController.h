@@ -100,6 +100,8 @@
  */
 @property (assign, nonatomic) BOOL unexposedItemsAreSelectable;
 
+@property (strong, nonatomic) UILongPressGestureRecognizer *moveGestureRecognizer;
+
 /** Check whether a given cell can be moved.
  *
  * Overload this method to prevent items from

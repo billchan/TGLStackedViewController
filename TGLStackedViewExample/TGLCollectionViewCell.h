@@ -26,8 +26,14 @@
 #import <UIKit/UIKit.h>
 
 @interface TGLCollectionViewCell : UICollectionViewCell
-
+{
+    UIView * viewBack;
+}
 @property (copy, nonatomic) NSString *title;
 @property (copy, nonatomic) UIColor *color;
+
+@property (weak, nonatomic) IBOutlet UIImageView *imageViewBG;
+
+- (void)flipTransitionWithOptions:(UIViewAnimationOptions)options halfway:(void (^)(BOOL finished))halfway completion:(void (^)(BOOL finished))completion;
 
 @end
