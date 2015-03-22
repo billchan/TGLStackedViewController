@@ -24,16 +24,26 @@
 //  THE SOFTWARE.
 
 #import <UIKit/UIKit.h>
+#import "ShadowLoyaltyTintCardViewController.h"
 
 @interface TGLCollectionViewCell : UICollectionViewCell
 {
-    UIView * viewBack;
+    CGFloat screenWidth;
+    ShadowLoyaltyTintCardViewController *shadowLoyaltyTintCardViewController;
 }
 @property (copy, nonatomic) NSString *title;
 @property (copy, nonatomic) UIColor *color;
 
 @property (weak, nonatomic) IBOutlet UIImageView *imageViewBG;
+@property (weak, nonatomic) IBOutlet UIView * viewBack;
+@property (weak, nonatomic) IBOutlet UIView * viewFrontTemplate;
+
+@property (weak, nonatomic) IBOutlet UIButton *btnFlip;
 
 - (void)flipTransitionWithOptions:(UIViewAnimationOptions)options halfway:(void (^)(BOOL finished))halfway completion:(void (^)(BOOL finished))completion;
+
+- (ShadowLoyaltyTintCardViewController *)shadowLoyaltyTintCardViewController;
+
+- (void)setShadowLoyaltyTintCardViewController:(ShadowLoyaltyTintCardViewController *)newValue;
 
 @end

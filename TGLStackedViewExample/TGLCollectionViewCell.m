@@ -27,71 +27,101 @@
 
 #import "TGLCollectionViewCell.h"
 
+#import "LoyaltyCardBackViewController.h"
+
+#import "const.h"
+
+
 @interface TGLCollectionViewCell ()
 
 @property (weak, nonatomic) IBOutlet UIImageView *imageView;
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *consHgh;
-@property (weak, nonatomic) IBOutlet UIButton *btnFlip;
 
 @end
 
 @implementation TGLCollectionViewCell
+@synthesize viewBack;
 
 - (void)awakeFromNib {
     
     [super awakeFromNib];
-
-//    UIImage *image = [[UIImage imageNamed:@"Background"] resizableImageWithCapInsets:UIEdgeInsetsMake(10.0, 10.0, 10.0, 10.0)];
-
-//    self.imageView.image = [image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     
-//    self.imageView.image = [UIImage imageNamed:@"kk"];
-//    self.imageView.contentMode = UIViewContentModeScaleAspectFit;
-//    self.imageView.backgroundColor = [UIColor whiteColor];
+    //    UIImage *image = [[UIImage imageNamed:@"Background"] resizableImageWithCapInsets:UIEdgeInsetsMake(10.0, 10.0, 10.0, 10.0)];
+    
+    //    self.imageView.image = [image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    
+    //    self.imageView.image = [UIImage imageNamed:@"kk"];
+    //    self.imageView.contentMode = UIViewContentModeScaleAspectFit;
+    //    self.imageView.backgroundColor = [UIColor whiteColor];
     CGRect screenRect = [[UIScreen mainScreen] bounds];
-    CGFloat screenWidth = screenRect.size.width;
-    self.consHgh.constant  = 216./320. * screenWidth;
+    screenWidth = screenRect.size.width;
+    self.consHgh.constant  = HGH_CARD/320. * screenWidth;
     
     self.imageView.tintColor = self.color;
-
+    
     self.nameLabel.text = self.title;
     
-    [self bringSubviewToFront:self.nameLabel];
-    [self bringSubviewToFront:self.btnFlip];
+//    [self bringSubviewToFront:self.nameLabel];
+//    [self bringSubviewToFront:self.btnFlip];
 }
 
 #pragma mark - Accessors
 
 - (void)setTitle:(NSString *)title {
-
+    
     _title = [title copy];
     
     self.nameLabel.text = self.title;
 }
 
 - (void)setColor:(UIColor *)color {
-
+    
     _color = [color copy];
     
     self.imageView.tintColor = self.color;
 }
 
+-(void)flipToFornt
+{
+    [self flipTransitionWithOptions:UIViewAnimationOptionTransitionFlipFromRight halfway:^(BOOL finished) {
+        ///TODO: UI update
+        viewBack.hidden = YES;
+        self.imageViewBG.hidden = NO;
+    } completion:nil];
+}
+
 - (IBAction)handleBtnFlip:(id)sender {
     
+    ///lazy init flipped view
     if(!viewBack)
     {
         UIStoryboard * storyboardCard = [UIStoryboard storyboardWithName:@"StaticLoyalCard_card" bundle:nil];
+        
+        LoyaltyCardBackViewController *controller= [storyboardCard instantiateViewControllerWithIdentifier:@"backView"];
 
-        UIViewController *controller= [storyboardCard instantiateViewControllerWithIdentifier:@"backView"];
         viewBack = controller.view;
         
+        viewBack.center = self.imageViewBG.center;
+        
+        viewBack.frame  = self.imageViewBG.frame;
+
+        controller.consHgh.constant  = HGH_CARD/320. * screenWidth;
+
+//        [self sendSubviewToBack:viewBack];
+//        [self sendSubviewToBack:self.imageViewBG];
+//        [self bringSubviewToFront:self.btnFlip];
         
         [self addSubview:viewBack];
+        viewBack.hidden = YES;
+        
+        [controller.btnFlip addTarget:self action:@selector(flipToFornt) forControlEvents:UIControlEventTouchUpInside];
     }
     
     [self flipTransitionWithOptions:UIViewAnimationOptionTransitionFlipFromLeft halfway:^(BOOL finished) {
-///TODO: UI update
+        ///TODO: UI update
+        viewBack.hidden = NO;
+        self.imageViewBG.hidden = YES;
     } completion:nil];
 }
 
@@ -123,6 +153,56 @@
             if (completion) completion(finished);
         }];
     }];
+}
+
+-(UIView * )viewFrontTemplate
+{
+    if (!_viewFrontTemplate)
+    {
+        UIStoryboard * storyboardCard = [UIStoryboard storyboardWithName:@"StaticLoyalCard_card" bundle:nil];
+        
+        [self setShadowLoyaltyTintCardViewController: [storyboardCard instantiateViewControllerWithIdentifier:@"tintedPaymentCard"]];
+        
+        _viewFrontTemplate = [self shadowLoyaltyTintCardViewController].view;
+        _viewFrontTemplate.frame  = CGRectMake(0, 0, screenWidth, HGH_CARD/320. * screenWidth);
+//        _viewFrontTemplate.center = self.imageViewBG.center;
+        
+//        controller.consHgh.constant  = HGH_CARD/320. * screenWidth;
+        
+        [self addSubview:_viewFrontTemplate];
+//        [self insertSubview:_viewFrontTemplate aboveSubview:self.btnFlip];
+//        [_viewFrontTemplate layoutSubviews];
+//        [_viewFrontTemplate layoutIfNeeded];
+        
+//        [_viewFrontTemplate setUserInteractionEnabled:YES];
+    
+//        CGPoint p = self.btnFlip.center;
+//        
+//        [self.btnFlip removeFromSuperview];
+//        [self addSubview:self.btnFlip];
+//        
+//        self.btnFlip.center = CGPointMake(100, 100);
+        
+        [self.shadowLoyaltyTintCardViewController.btnFlip addTarget:self action:@selector(handleBtnFlip:) forControlEvents:UIControlEventTouchUpInside];
+        
+        self.shadowLoyaltyTintCardViewController.btnFlip.hidden = YES;
+    }
+//
+//    [self bringSubviewToFront:self.btnFlip];
+//    self.btnFlip.enabled = YES;
+//    self.btnFlip.layer.zPosition = 1000;
+    
+    
+    return _viewFrontTemplate;
+    
+    ///TODO: update field when layout
+}
+- (ShadowLoyaltyTintCardViewController *)shadowLoyaltyTintCardViewController {
+    return shadowLoyaltyTintCardViewController;
+}
+
+- (void)setShadowLoyaltyTintCardViewController:(ShadowLoyaltyTintCardViewController *)newValue {
+    shadowLoyaltyTintCardViewController = newValue;
 }
 
 @end
