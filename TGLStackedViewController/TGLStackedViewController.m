@@ -460,7 +460,6 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
                 [self gestureRecognizerStateBegan:recognizer];
             }
             if (self.movingIndexPath) {
-                NSLog(@"moved!");
                 [self gestureRecognizerStateChanged:recognizer];
             }
             break;
