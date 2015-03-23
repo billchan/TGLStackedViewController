@@ -33,6 +33,13 @@
 @property (nonatomic, readonly) UIPanGestureRecognizer *movePanGestureRecognizer;
 
 /**
+ * The max velocity for animating the exposedItemIndexPath
+ *
+ * Default value is 0.7
+ */
+@property (nonatomic, assign) CGFloat maxExposedVelocity;
+
+/**
  * The min velocity needed by the pan gesture to be considered
  * a toss/fling. If toss/fling, the exposedItemIndex is set to nil and animates
  * with the toss/fling velocity

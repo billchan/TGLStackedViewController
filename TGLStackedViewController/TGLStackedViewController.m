@@ -58,6 +58,12 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
 
 @synthesize stackedLayout = _stackedLayout;
 
+- (void)setMaxExposedVelocity:(CGFloat)maxExposedVelocity {
+    if (maxExposedVelocity > 1.0f) maxExposedVelocity = 1.0f;
+    else if (maxExposedVelocity < 0) maxExposedVelocity = 0;
+    _maxExposedVelocity = maxExposedVelocity;
+}
+
 - (UICollectionViewLayout *)collectionViewLayout {
     return self.collectionView.collectionViewLayout;
 }
@@ -110,6 +116,7 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
     _layoutAnimationDuration = 0.5;
     _minTossVelocity = 0.5;
     _minOffsetForReset = 100;
+    _maxExposedVelocity = 0.7;
 }
 
 - (TGLExposedLayout *)exposedLayout:(NSIndexPath *)exposedItemIndexPath {
@@ -392,8 +399,8 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
         CGRect frame = view.frame;
         CGPoint origin = frame.origin;
         CGPoint velocity = CGPointMake(origin.x == 0 ? 0 : velGest.x / frame.origin.x ,
-                                       origin.y == 0 ? 0 : velGest.y / frame.origin.y) ;
-        initialVel = velocity.y;
+                                       origin.y == 0 ? 0 : velGest.y / frame.origin.y);
+        initialVel = MIN(velocity.y, self.maxExposedVelocity);
     }
     
     __weak typeof(self) weakSelf = self;
