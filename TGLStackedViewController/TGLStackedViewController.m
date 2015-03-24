@@ -114,7 +114,6 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
     _exposedBottomOverlap = 20.0;
     
     _layoutAnimationDuration = 0.5;
-    _minTossVelocity = 0.5;
     _minOffsetForReset = 100;
     _maxExposedVelocity = 0.7;
 }
@@ -413,14 +412,13 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
         layout.movingIndexPath = self.movingIndexPath;
         [layout invalidateLayout];
     };
-    
-    NSLog(@"Initial Vel: %d %@", initialVel, initialVel > self.minTossVelocity ? @"YES" : @"NO");
-    
-    CGFloat originalY = CGRectGetMinY(self.movingCell.frame);
+        
+    CGFloat offset = CGRectGetMinY(self.movingView.frame) - CGRectGetMinY(self.movingCell.frame);
     if ([recognizer isKindOfClass:[UIPanGestureRecognizer class]] &&
-        (initialVel > self.minTossVelocity || fabsf(originalY-CGRectGetMinY(self.movingView.frame)) > self.minOffsetForReset)) {
+        fabsf(offset) > self.minOffsetForReset) {
         self.movingCell.frame = self.movingView.frame;
         completed(YES);
+        if (offset < 0) initialVel = 0;
         [self setExposedItemIndexPath:nil withInitialVelocity:initialVel];
     } else {
         __weak typeof(self) weakSelf = self;
