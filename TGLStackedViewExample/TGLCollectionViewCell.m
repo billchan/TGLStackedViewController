@@ -155,48 +155,48 @@
     }];
 }
 
--(UIView * )viewFrontTemplate
-{
-    if (!_viewFrontTemplate)
-    {
-        UIStoryboard * storyboardCard = [UIStoryboard storyboardWithName:@"StaticLoyalCard_card" bundle:nil];
-        
-        [self setShadowLoyaltyTintCardViewController: [storyboardCard instantiateViewControllerWithIdentifier:@"tintedPaymentCard"]];
-        
-        _viewFrontTemplate = [self shadowLoyaltyTintCardViewController].view;
-        _viewFrontTemplate.frame  = CGRectMake(0, 0, screenWidth, HGH_CARD/320. * screenWidth);
-//        _viewFrontTemplate.center = self.imageViewBG.center;
-        
-//        controller.consHgh.constant  = HGH_CARD/320. * screenWidth;
-        
-        [self addSubview:_viewFrontTemplate];
-//        [self insertSubview:_viewFrontTemplate aboveSubview:self.btnFlip];
-//        [_viewFrontTemplate layoutSubviews];
-//        [_viewFrontTemplate layoutIfNeeded];
-        
-//        [_viewFrontTemplate setUserInteractionEnabled:YES];
-    
-//        CGPoint p = self.btnFlip.center;
+//-(UIView * )viewFrontTemplate
+//{
+//    if (!_viewFrontTemplate)
+//    {
+//        UIStoryboard * storyboardCard = [UIStoryboard storyboardWithName:@"StaticLoyalCard_card" bundle:nil];
 //        
-//        [self.btnFlip removeFromSuperview];
-//        [self addSubview:self.btnFlip];
+//        [self setShadowLoyaltyTintCardViewController: [storyboardCard instantiateViewControllerWithIdentifier:@"tintedPaymentCard"]];
 //        
-//        self.btnFlip.center = CGPointMake(100, 100);
-        
-        [self.shadowLoyaltyTintCardViewController.btnFlip addTarget:self action:@selector(handleBtnFlip:) forControlEvents:UIControlEventTouchUpInside];
-        
-        self.shadowLoyaltyTintCardViewController.btnFlip.hidden = YES;
-    }
-//
-//    [self bringSubviewToFront:self.btnFlip];
-//    self.btnFlip.enabled = YES;
-//    self.btnFlip.layer.zPosition = 1000;
-    
-    
-    return _viewFrontTemplate;
-    
-    ///TODO: update field when layout
-}
+//        _viewFrontTemplate = [self shadowLoyaltyTintCardViewController].view;
+//        _viewFrontTemplate.frame  = CGRectMake(0, 0, screenWidth, HGH_CARD/320. * screenWidth);
+////        _viewFrontTemplate.center = self.imageViewBG.center;
+//        
+////        controller.consHgh.constant  = HGH_CARD/320. * screenWidth;
+//        
+//        [self addSubview:_viewFrontTemplate];
+////        [self insertSubview:_viewFrontTemplate aboveSubview:self.btnFlip];
+////        [_viewFrontTemplate layoutSubviews];
+////        [_viewFrontTemplate layoutIfNeeded];
+//        
+////        [_viewFrontTemplate setUserInteractionEnabled:YES];
+//    
+////        CGPoint p = self.btnFlip.center;
+////        
+////        [self.btnFlip removeFromSuperview];
+////        [self addSubview:self.btnFlip];
+////        
+////        self.btnFlip.center = CGPointMake(100, 100);
+//        
+//        [self.shadowLoyaltyTintCardViewController.btnFlip addTarget:self action:@selector(handleBtnFlip:) forControlEvents:UIControlEventTouchUpInside];
+//        
+//        self.shadowLoyaltyTintCardViewController.btnFlip.hidden = YES;
+//    }
+////
+////    [self bringSubviewToFront:self.btnFlip];
+////    self.btnFlip.enabled = YES;
+////    self.btnFlip.layer.zPosition = 1000;
+//    
+//    
+//    return _viewFrontTemplate;
+//    
+//    ///TODO: update field when layout
+//}
 - (ShadowLoyaltyTintCardViewController *)shadowLoyaltyTintCardViewController {
     return shadowLoyaltyTintCardViewController;
 }

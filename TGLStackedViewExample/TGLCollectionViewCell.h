@@ -36,7 +36,7 @@
 
 @property (weak, nonatomic) IBOutlet UIImageView *imageViewBG;
 @property (weak, nonatomic) IBOutlet UIView * viewBack;
-@property (weak, nonatomic) IBOutlet UIView * viewFrontTemplate;
+//@property (weak, nonatomic) IBOutlet UIView * viewFrontTemplate;
 
 @property (weak, nonatomic) IBOutlet UIButton *btnFlip;
 

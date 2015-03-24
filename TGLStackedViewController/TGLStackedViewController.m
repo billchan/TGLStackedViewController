@@ -166,7 +166,7 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
             //        data when layout is locked" but seems
             //       to work nevertheless.
             //
-            [self.collectionView performBatchUpdates:^ {
+            [self.collectionView performBatchUpdates:^ {///TODO: source of "trying to load collection view layout data when layout is locked" ?
                 
                 [self.collectionView setContentOffset:self.stackedContentOffset animated:YES];
                 [self.collectionView setCollectionViewLayout:self.stackedLayout animated:YES];
