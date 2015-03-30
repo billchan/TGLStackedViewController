@@ -158,6 +158,20 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
     [self setExposedItemIndexPath:exposedItemIndexPath withInitialVelocity:0];
 }
 
+- (void)setStackedLayoutWithInitialVelocity:(CGFloat)velocity fromY:(CGFloat)y {
+    if (self.exposedItemIndexPath == nil) {
+        return;
+    }
+    
+    UICollectionViewCell *cell = [self.collectionView cellForItemAtIndexPath:self.exposedItemIndexPath];
+    
+    CGRect cellFrame = cell.frame;
+    cellFrame.origin.y = y;
+    cell.frame = cellFrame;
+    
+    [self setExposedItemIndexPath:nil withInitialVelocity:velocity];
+}
+
 - (void)setExposedItemIndexPath:(NSIndexPath *)exposedItemIndexPath withInitialVelocity:(CGFloat)velocity {
     [self willChangeValueForKey:@"exposedItemIndexPath"];
     if (![exposedItemIndexPath isEqual:_exposedItemIndexPath]) {
@@ -325,13 +339,14 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
         UICollectionViewCell *prevCell = [self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:indexPath.item-1 inSection:indexPath.section]];
         
         self.movingView = [[UIView alloc] initWithFrame:movingCell.frame];
-        self.movingView.backgroundColor = [UIColor redColor];
+        self.movingView.backgroundColor = [UIColor clearColor];
         self.movingView.layer.cornerRadius = movingCell.layer.cornerRadius;
         self.movingView.layer.masksToBounds = YES;
         
         self.startCenter = self.movingView.center;
         
         UIImageView *movingImageView = [[UIImageView alloc] initWithImage:[self screenshotImageOfItem:movingCell]];
+        movingImageView.backgroundColor = [UIColor clearColor];
         [self.movingView addSubview:movingImageView];
         
         if (prevCell == nil) {
