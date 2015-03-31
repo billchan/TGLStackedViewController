@@ -405,17 +405,17 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
     self.movingIndexPath = nil;
     
     CGFloat initialVel = 0;
-    if ([recognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
-        UIPanGestureRecognizer *panGest = (UIPanGestureRecognizer *)recognizer;
-        
-        UIView *view = self.movingView;
-        CGPoint velGest = [panGest velocityInView:recognizer.view];
-        CGRect frame = view.frame;
-        CGPoint origin = frame.origin;
-        CGPoint velocity = CGPointMake(origin.x == 0 ? 0 : velGest.x / frame.origin.x ,
-                                       origin.y == 0 ? 0 : velGest.y / frame.origin.y);
-        initialVel = MIN(velocity.y, self.maxExposedVelocity);
-    }
+//    if ([recognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
+//        UIPanGestureRecognizer *panGest = (UIPanGestureRecognizer *)recognizer;
+//        
+//        UIView *view = seslf.movingView;
+//        CGPoint velGest = [panGest velocityInView:recognizer.view];
+//        CGRect frame = view.frame;
+//        CGPoint origin = frame.origin;
+//        CGPoint velocity = CGPointMake(origin.x == 0 ? 0 : velGest.x / frame.origin.x ,
+//                                       origin.y == 0 ? 0 : velGest.y / frame.origin.y);
+//        initialVel = MIN(velocity.y, self.maxExposedVelocity);
+//    }
     
     __weak typeof(self) weakSelf = self;
     void (^completed)(BOOL finished) = ^(BOOL finished){
@@ -437,7 +437,7 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
         [self setExposedItemIndexPath:nil withInitialVelocity:initialVel];
     } else {
         __weak typeof(self) weakSelf = self;
-        [UIView animateWithDuration:0.3 delay:0 usingSpringWithDamping:1 initialSpringVelocity:initialVel options:0 animations:^{
+        [UIView animateWithDuration:self.layoutAnimationDuration delay:0 usingSpringWithDamping:1 initialSpringVelocity:initialVel options:0 animations:^{
             __strong typeof(weakSelf) strongSelf = weakSelf;
             strongSelf.movingView.frame = layoutAttributes.frame;
         } completion:completed];
