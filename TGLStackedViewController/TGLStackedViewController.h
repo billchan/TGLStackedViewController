@@ -48,6 +48,14 @@
 @property (nonatomic, assign) CGFloat minOffsetForReset;
 
 /**
+ * The min velocity needed from the pan gesture to set the
+ * exposedItemIndex to nil and animate
+ *
+ * Default value is 0.6
+ */
+@property (nonatomic, assign) CGFloat minPanVelocityForReset;
+
+/**
  * Called when `setExposedItemIndexPath:withInitialVelocity:` completes the animation
  */
 @property (nonatomic, copy) void (^exposedItemIndexPathOnCompletion)(NSIndexPath *exposedItemIndexPath);

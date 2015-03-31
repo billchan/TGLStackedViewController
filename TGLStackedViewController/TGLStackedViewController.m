@@ -116,6 +116,7 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
     _layoutAnimationDuration = 0.5;
     _minOffsetForReset = 100;
     _maxExposedVelocity = 0.7;
+    _minPanVelocityForReset = 0.6;
 }
 
 - (TGLExposedLayout *)exposedLayout:(NSIndexPath *)exposedItemIndexPath {
@@ -404,18 +405,21 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
     
     self.movingIndexPath = nil;
     
-    CGFloat initialVel = 0;
-//    if ([recognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
-//        UIPanGestureRecognizer *panGest = (UIPanGestureRecognizer *)recognizer;
-//        
-//        UIView *view = seslf.movingView;
-//        CGPoint velGest = [panGest velocityInView:recognizer.view];
-//        CGRect frame = view.frame;
-//        CGPoint origin = frame.origin;
-//        CGPoint velocity = CGPointMake(origin.x == 0 ? 0 : velGest.x / frame.origin.x ,
-//                                       origin.y == 0 ? 0 : velGest.y / frame.origin.y);
-//        initialVel = MIN(velocity.y, self.maxExposedVelocity);
-//    }
+    CGFloat velocity = 0;
+    if ([recognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
+        UIPanGestureRecognizer *panGest = (UIPanGestureRecognizer *)recognizer;
+        
+        UIView *view = self.movingView;
+        CGPoint velGest = [panGest velocityInView:recognizer.view];
+
+        CGFloat finalX = CGRectGetMinX(view.frame);
+        CGFloat finalY = CGRectGetHeight(self.collectionView.frame);
+        CGFloat curY = CGRectGetMinY(view.frame);
+        
+        CGFloat distance = curY - finalY;
+        
+        velocity = fabsf(velGest.y / distance);
+    }
     
     __weak typeof(self) weakSelf = self;
     void (^completed)(BOOL finished) = ^(BOOL finished){
@@ -430,14 +434,13 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
         
     CGFloat offset = CGRectGetMinY(self.movingView.frame) - CGRectGetMinY(self.movingCell.frame);
     if ([recognizer isKindOfClass:[UIPanGestureRecognizer class]] &&
-        fabsf(offset) > self.minOffsetForReset) {
+        (fabsf(offset) > self.minOffsetForReset || velocity >= self.minPanVelocityForReset)) {
         self.movingCell.frame = self.movingView.frame;
         completed(YES);
-        if (offset < 0) initialVel = 0;
-        [self setExposedItemIndexPath:nil withInitialVelocity:initialVel];
+        [self setExposedItemIndexPath:nil withInitialVelocity:0];
     } else {
         __weak typeof(self) weakSelf = self;
-        [UIView animateWithDuration:self.layoutAnimationDuration delay:0 usingSpringWithDamping:1 initialSpringVelocity:initialVel options:0 animations:^{
+        [UIView animateWithDuration:self.layoutAnimationDuration delay:0 usingSpringWithDamping:1 initialSpringVelocity:0 options:0 animations:^{
             __strong typeof(weakSelf) strongSelf = weakSelf;
             strongSelf.movingView.frame = layoutAttributes.frame;
         } completion:completed];
