@@ -31,6 +31,7 @@
 
 @property (nonatomic, readonly) UILongPressGestureRecognizer *moveLongPressGestureRecognizer;
 @property (nonatomic, readonly) UIPanGestureRecognizer *movePanGestureRecognizer;
+@property (nonatomic, strong) UIView *movingView;
 
 /**
  * The max velocity for animating the exposedItemIndexPath

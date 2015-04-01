@@ -42,7 +42,6 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
 
 @property (assign, nonatomic) CGPoint stackedContentOffset;
 
-@property (strong, nonatomic) UIView *movingView;
 @property (strong, nonatomic) NSIndexPath *movingIndexPath;
 
 @property (assign, nonatomic) TGLStackedViewControllerScrollDirection scrollDirection;
