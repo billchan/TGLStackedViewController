@@ -113,6 +113,8 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
     _exposedBottomOverlap = 20.0;
     
     _layoutAnimationDuration = 0.5;
+    _layoutAnimationSpringDamping = 0.8;
+
     _minOffsetForReset = 100;
     _maxExposedVelocity = 0.7;
     _minPanVelocityForReset = 0.6;
@@ -188,7 +190,7 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
             
             TGLExposedLayout *exposedLayout = [self exposedLayout:exposedItemIndexPath];
             
-            [UIView animateWithDuration:self.layoutAnimationDuration delay:0 usingSpringWithDamping:1 initialSpringVelocity:velocity options:0 animations:^{
+            [UIView animateWithDuration:self.layoutAnimationDuration delay:0 usingSpringWithDamping:self.layoutAnimationSpringDamping initialSpringVelocity:velocity options:0 animations:^{
                 [self.collectionView setCollectionViewLayout:exposedLayout animated:YES];
             } completion:^(BOOL finished) {
                 if (self.exposedItemIndexPathOnCompletion) {
@@ -215,7 +217,7 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
             //
             [self.collectionView performBatchUpdates:^ {
                 
-                [UIView animateWithDuration:self.layoutAnimationDuration delay:0 usingSpringWithDamping:1 initialSpringVelocity:velocity options:0 animations:^{
+                [UIView animateWithDuration:self.layoutAnimationDuration delay:0 usingSpringWithDamping:self.layoutAnimationSpringDamping initialSpringVelocity:velocity options:0 animations:^{
                     [self.collectionView setContentOffset:self.stackedContentOffset animated:YES];
                     [self.collectionView setCollectionViewLayout:self.stackedLayout animated:YES];
                 } completion:^(BOOL finished) {
@@ -439,7 +441,7 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
         [self setExposedItemIndexPath:nil withInitialVelocity:0];
     } else {
         __weak typeof(self) weakSelf = self;
-        [UIView animateWithDuration:self.layoutAnimationDuration delay:0 usingSpringWithDamping:1 initialSpringVelocity:0 options:0 animations:^{
+        [UIView animateWithDuration:self.layoutAnimationDuration delay:0 usingSpringWithDamping:self.layoutAnimationSpringDamping initialSpringVelocity:0 options:0 animations:^{
             __strong typeof(weakSelf) strongSelf = weakSelf;
             strongSelf.movingView.frame = layoutAttributes.frame;
         } completion:completed];

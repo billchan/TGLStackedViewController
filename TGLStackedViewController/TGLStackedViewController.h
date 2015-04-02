@@ -73,6 +73,13 @@
  */
 @property (nonatomic, assign) CGFloat layoutAnimationDuration;
 
+/**
+ * The collection view layout animation spring damping when layouts are changed (i.e. stacked to exposed animation).
+ *
+ * Default value is 0.8
+ */
+@property (nonatomic, assign) CGFloat layoutAnimationSpringDamping;
+
 /** The collection view layout object used when all items are collapsed. */
 @property (strong, readonly, nonatomic) TGLStackedLayout *stackedLayout;
 
