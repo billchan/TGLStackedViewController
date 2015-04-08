@@ -36,6 +36,10 @@
 @implementation TGLExposedLayout
 
 - (instancetype)initWithExposedItemIndex:(NSInteger)exposedItemIndex {
+    return [self initWithExposedItemIndex:exposedItemIndex indexPaths:nil];
+}
+
+- (instancetype)initWithExposedItemIndex:(NSInteger)exposedItemIndex indexPaths:(NSArray *)indexPaths {
     
     self = [super init];
     
@@ -44,9 +48,10 @@
         self.layoutMargin = UIEdgeInsetsMake(40.0, 0.0, 0.0, 0.0);
         self.topOverlap = 20.0;
         self.bottomOverlap = 20.0;
-        self.bottomOverlapCount = 1;
 
         self.exposedItemIndex = exposedItemIndex;
+        
+        self.indexPaths = indexPaths;
     }
     
     return self;
@@ -94,16 +99,6 @@
     }
 }
 
-- (void)setBottomOverlapCount:(NSUInteger)bottomOverlapCount {
-    
-    if (bottomOverlapCount != self.bottomOverlapCount) {
-        
-        _bottomOverlapCount = bottomOverlapCount;
-        
-        [self invalidateLayout];
-    }
-}
-
 #pragma mark - Layout computation
 
 - (CGSize)collectionViewContentSize {
@@ -125,55 +120,38 @@
     }
 
     NSMutableDictionary *layoutAttributes = [NSMutableDictionary dictionary];
-    NSInteger itemCount = [self.collectionView numberOfItemsInSection:0];
+    NSInteger const ItemCount = [self.collectionView numberOfItemsInSection:0];
+    
+    CGFloat const BottomY = CGRectGetHeight(self.collectionView.bounds) - self.layoutMargin.top - self.layoutMargin.bottom  - self.collectionView.contentInset.top;
+    NSUInteger const CardsCount = self.indexPaths.count;
 
-    for (NSInteger item = 0; item < itemCount; item++) {
+    for (NSInteger item = 0; item < ItemCount; item++) {
 
         NSIndexPath *indexPath = [NSIndexPath indexPathForItem:item inSection:0];
         UICollectionViewLayoutAttributes *attributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:indexPath];
-
-        if (item < self.exposedItemIndex) {
-            
-            // Items before exposed item
-            // are aligned above top with
-            // amount -topOverlap
-            //
-            attributes.frame = CGRectMake(self.layoutMargin.left, self.layoutMargin.top - self.topOverlap, itemSize.width, itemSize.height);
-
-            // Items below first unexposed
-            // are hidden to improve
-            // performance
-            //
-            if (item < self.exposedItemIndex - 1) attributes.hidden = YES;
-
-        } else if (item == self.exposedItemIndex) {
+        
+        // The moving item is hidden
+        //
+        attributes.hidden = [attributes.indexPath isEqual:self.movingIndexPath];
+        
+        if (item == self.exposedItemIndex) {
             
             // Exposed item
             //
             attributes.frame = CGRectMake(self.layoutMargin.left, self.layoutMargin.top, itemSize.width, itemSize.height);
+            attributes.zIndex = 0;
 
-        } else if (item > self.exposedItemIndex + self.bottomOverlapCount) {
-            
-            // Items following overlapping
-            // items at bottom are hidden
-            // to improve performance
-            //
-            attributes.frame = CGRectMake(self.layoutMargin.left, self.collectionViewContentSize.height, itemSize.width, itemSize.height);
-            attributes.hidden = YES;
-
-        } else {
+        } else if ([self.indexPaths containsObject:[NSIndexPath indexPathForItem:item inSection:0]]) {
         
-            // At max -bottomOverlapCount
-            // overlapping item(s) at the
-            // botton right below the
-            // exposed item
-            //
-            NSInteger count = MIN(self.bottomOverlapCount + 1, itemCount - self.exposedItemIndex) - (item - self.exposedItemIndex);
+            NSInteger count = CardsCount - (item - self.exposedItemIndex) + 1;
 
-            attributes.frame = CGRectMake(self.layoutMargin.left, self.layoutMargin.top + itemSize.height - count * self.bottomOverlap, itemSize.width, itemSize.height);
+            attributes.zIndex = item+1;
+            
+            attributes.frame = CGRectMake(self.layoutMargin.left, BottomY - count * self.bottomOverlap, itemSize.width, itemSize.height);
+        } else {
+            //hide completely
+            attributes.frame = CGRectMake(self.layoutMargin.left, BottomY-1, itemSize.width, itemSize.height);
         }
-
-        attributes.zIndex = item;
 
         layoutAttributes[indexPath] = attributes;
     }

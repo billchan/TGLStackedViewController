@@ -29,6 +29,57 @@
 
 @interface TGLStackedViewController : UICollectionViewController <UIGestureRecognizerDelegate>
 
+@property (nonatomic, readonly) UILongPressGestureRecognizer *moveLongPressGestureRecognizer;
+@property (nonatomic, readonly) UIPanGestureRecognizer *movePanGestureRecognizer;
+@property (nonatomic, strong) UIView *movingView;
+
+/**
+ * The max velocity for animating the exposedItemIndexPath
+ *
+ * Default value is 0.7
+ */
+@property (nonatomic, assign) CGFloat maxExposedVelocity;
+
+/**
+ * The min offset needed from the pan gesture to set the
+ * exposedItemIndex to nil and animate
+ *
+ * Default value is 100
+ */
+@property (nonatomic, assign) CGFloat minOffsetForReset;
+
+/**
+ * The min velocity needed from the pan gesture to set the
+ * exposedItemIndex to nil and animate
+ *
+ * Default value is 0.6
+ */
+@property (nonatomic, assign) CGFloat minPanVelocityForReset;
+
+/**
+ * Called when `setExposedItemIndexPath:withInitialVelocity:` completes the animation
+ */
+@property (nonatomic, copy) void (^exposedItemIndexPathOnCompletion)(NSIndexPath *exposedItemIndexPath);
+
+/**
+ * Whether or not the pan gesture is enabled
+ */
+@property (nonatomic, assign) BOOL panGestureEnabled;
+
+/** 
+ * The collection view layout animation when layouts are changed (i.e. stacked to exposed animation).
+ *
+ * Default value is 0.5
+ */
+@property (nonatomic, assign) CGFloat layoutAnimationDuration;
+
+/**
+ * The collection view layout animation spring damping when layouts are changed (i.e. stacked to exposed animation).
+ *
+ * Default value is 0.8
+ */
+@property (nonatomic, assign) CGFloat layoutAnimationSpringDamping;
+
 /** The collection view layout object used when all items are collapsed. */
 @property (strong, readonly, nonatomic) TGLStackedLayout *stackedLayout;
 
@@ -68,15 +119,6 @@
  */
 @property (assign, nonatomic) CGFloat exposedBottomOverlap;
 
-/** Number of items overlapping below exposed item.
- *
- * Changes to this property take effect on next
- * item being selected, i.e. exposed.
- *
- * Default value is 1
- */
-@property (assign, nonatomic) NSUInteger exposedBottomOverlapCount;
-
 /** Index path of currently exposed item.
  *
  * The exposed item's selected state is YES.
@@ -99,8 +141,6 @@
  * may be selected.
  */
 @property (assign, nonatomic) BOOL unexposedItemsAreSelectable;
-
-@property (strong, nonatomic) UILongPressGestureRecognizer *moveGestureRecognizer;
 
 /** Check whether a given cell can be moved.
  *
@@ -136,5 +176,8 @@
  * @param toIndexPath New item indexPath
  */
 - (void)moveItemAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath;
+
+- (void)setExposedItemIndexPath:(NSIndexPath *)exposedItemIndexPath withInitialVelocity:(CGFloat)velocity;
+- (void)setStackedLayoutWithInitialVelocity:(CGFloat)velocity fromY:(CGFloat)y;
 
 @end
