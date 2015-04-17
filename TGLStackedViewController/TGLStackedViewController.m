@@ -93,7 +93,8 @@ typedef NS_ENUM(NSInteger, TGLStackedViewControllerScrollDirection) {
 }
 
 ///edit here to customize stacked layout
-- (void)initController {
+- (void)initController
+{
     
     _stackedLayout = [[TGLStackedLayout alloc] init];
     
