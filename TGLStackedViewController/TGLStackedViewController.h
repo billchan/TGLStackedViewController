@@ -182,4 +182,5 @@
 - (void)setExposedItemIndexPath:(NSIndexPath *)exposedItemIndexPath withInitialVelocity:(CGFloat)velocity;
 - (void)setStackedLayoutWithInitialVelocity:(CGFloat)velocity fromY:(CGFloat)y;
 
+- (void)initController;
 @end
